@@ -456,37 +456,38 @@
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-body">
-            <h4>Create your project folder</h4>
-            <p>Make a new folder anywhere on your computer. Name it something simple like <em>loan-calculator</em> or <em>calc-tools</em>.</p>
+            <h4>Open a project folder in Claude Desktop</h4>
+            <p>Launch Claude Desktop. Click the <strong>Code</strong> tab at the top. Click <strong>Open folder&hellip;</strong> at the bottom. A file browser appears &mdash; navigate to where you want this project to live (Desktop, Documents, wherever), create a new folder named something simple like <em>loan-calculator</em>, select it, click Open.</p>
+            <p>Claude Code is now working inside that folder. You'll see a chat input at the bottom of the window that reads <em>"Describe a task or ask a question."</em> Every prompt goes there.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-body">
-            <h4>Launch Claude Code in that folder</h4>
-            <p>Open your terminal, navigate to the folder, type <code>claude</code>. Claude Code launches. First time, log in via the browser prompt.</p>
+            <h4>Build it with one prompt</h4>
+            <p>Type this into the chat input and hit Enter. Claude Code reads what you asked for and writes the entire app in one shot.</p>
+            <div class="prompt"><span class="prompt-label">PROMPT</span>Build me a single-page HTML loan calculator. Let the user enter loan amount, interest rate, term in years, and start date. Show monthly payment, total interest, total paid, and a full amortization schedule. Style it cleanly &mdash; soft shadows, rounded corners, professional palette. Mobile-friendly. Single index.html, no frameworks.</div>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
-            <h4>Build it with one prompt</h4>
-            <p>Claude Code reads your request and writes the entire app in one shot.</p>
-            <div class="prompt"><span class="prompt-label">PROMPT</span>Build me a single-page HTML loan calculator. Let the user enter loan amount, interest rate, term in years, and start date. Show monthly payment, total interest, total paid, and a full amortization schedule. Style it cleanly &mdash; soft shadows, rounded corners, professional palette. Mobile-friendly. Single index.html, no frameworks.</div>
+            <h4>View it in the preview pane (or your browser)</h4>
+            <p>Claude Code Desktop has a built-in preview pane that renders HTML right inside the app. Or double-click the index.html file in your file browser to open it in any browser &mdash; exactly how your clients will see it when it's live. Enter a loan amount, a rate, a term. Confirm the math. A real, interactive financial tool that didn't exist 60 seconds ago.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-body">
-            <h4>View it in your browser</h4>
-            <p>Double-click the index.html file. There's your calculator, working in your browser. A real, interactive financial tool that didn't exist 60 seconds ago.</p>
+            <h4>Iterate until it's yours</h4>
+            <p>Push back. Add a comparison column. Add a chart. Match your firm's brand colors. Drag your logo into the chat alongside a prompt and Claude Code will place it in the header. Each prompt &rarr; file edits &rarr; see the change. This is the rhythm.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">5</div>
           <div class="step-body">
-            <h4>Iterate until it's yours</h4>
-            <p>Push back. Add a comparison column. Add a chart. Match your firm's brand colors. Add a CSV download button. Each prompt &rarr; file edits &rarr; refresh the browser &rarr; see the change. This is the rhythm.</p>
+            <h4>Make it yours &mdash; the closer</h4>
+            <p>Spend the last few minutes pushing on details: layout, wording on each label, your firm's name in the header, a download button. Treat it like a real client tool &mdash; because by Tuesday, that's exactly what it'll be.</p>
           </div>
         </div>
       </div>
@@ -519,14 +520,18 @@
           <div class="step-num">2</div>
           <div class="step-body">
             <h4>Prep the folder on your computer</h4>
-            <p>On your Desktop, create a folder named exactly for the URL slug you want &mdash; e.g., <em>idea-to-live</em> or <em>loan-calculator</em>. Move the HTML file from your Claude Code project into that folder. Rename it to <code>index.html</code> (GitHub Pages auto-serves index.html at folder URLs, giving you the clean <em>yoursite.com/idea-to-live/</em> instead of an ugly filename on the end).</p>
+            <p>Find the folder Claude Code built your tool in (the one you created in Part 1 &mdash; probably on your Desktop). Two small checks:</p>
+            <p><strong>Folder name:</strong> if it isn't already your URL slug, rename it. <em>loan-calculator</em> becomes <em>yoursite.com/loan-calculator/</em>. Use lowercase-with-hyphens, no spaces, no capitals.</p>
+            <p><strong>Main HTML file:</strong> open the folder and confirm there's a file called <code>index.html</code>. If the HTML file has a different name, rename it. GitHub Pages auto-serves index.html at folder URLs, giving you the clean URL instead of an ugly filename on the end.</p>
+            <p><strong>Everything else Claude Code put in there:</strong> leave it alone. It all goes up together. More on that in the next step.</p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
             <h4>Drag-and-drop the folder into GitHub</h4>
-            <p>On your empty repo page, click the <strong>"uploading an existing file"</strong> link in the blue Quick Setup box (or Add file &rarr; Upload files once the repo has content). <strong>Drag the whole folder</strong> from your Desktop into the drop zone &mdash; GitHub preserves the folder structure automatically. Scroll down, click Commit changes.</p>
+            <p>On your empty repo page, click the <strong>"uploading an existing file"</strong> link in the blue Quick Setup box (or Add file &rarr; Upload files once the repo has content). <strong>Drag the whole folder</strong> from your computer into the drop zone &mdash; not just the HTML file inside it. GitHub preserves the folder structure automatically. Commit changes.</p>
+            <p><strong>Why the folder, not just the file:</strong> for simple prompts like the loan calculator, Claude Code produces one index.html file and nothing else. But for more complex tools, it might produce separate CSS, JavaScript, or image files. The folder is the unit that works together &mdash; always drag the whole folder and you never have to think about which files matter.</p>
           </div>
         </div>
         <div class="step">
@@ -553,7 +558,8 @@ TTL:   default</div>
 
       <div class="callout">
         <h3>TO UPDATE LATER</h3>
-        <p>Every time you want to change a file, drag a new file with the same name (<code>index.html</code>) into the same folder on GitHub. GitHub treats it as a replacement automatically &mdash; no need to delete first. New version goes live within a minute. Good enough for most updates. <strong>Part 3 shows the power-user version</strong> where Claude Code pushes changes directly and the site updates in 30 seconds.</p>
+        <p>When you want to update a tool, navigate into its folder on GitHub (e.g., click into the <em>loan-calculator</em> folder). Click Add file &rarr; Upload files, and drag whatever files changed. GitHub replaces files that match names by filename &mdash; no need to delete first. For single-file tools, that's just a new <code>index.html</code>. For multi-file tools, drag all the changed files at once (or drag the whole folder again &mdash; any files that match names get replaced). New version live within a minute.</p>
+        <p><strong>Part 3 shows the power-user version</strong> where Claude Code pushes changes directly and the site updates in 30 seconds without any drag-and-drop at all.</p>
       </div>
     </div>
   </section>
