@@ -229,10 +229,11 @@
 
   /* PROMPT BLOCK */
   .prompt {
+    position: relative;
     margin-top: 14px;
     background: var(--charcoal);
     color: #ECEFF1;
-    padding: 16px 20px;
+    padding: 16px 52px 16px 20px;
     border-radius: 6px;
     font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
     font-size: 13.5px; line-height: 1.55;
@@ -251,6 +252,39 @@
     margin-bottom: 8px;
   }
   .stage-ship .prompt .prompt-label { color: var(--nerd-blue); }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.75);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .copy-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border-color: rgba(255,255,255,0.4);
+  }
+  .copy-btn.copied {
+    background: var(--nerd-green);
+    border-color: var(--nerd-green);
+    color: white;
+  }
+  .copy-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
 
   /* LEVEL UP */
   .stage-level {
@@ -406,32 +440,27 @@
     <div class="container">
       <div class="stage-label">STAGE 0</div>
       <h2 class="stage-title">Setup</h2>
-      <div class="stage-meta">Five things to have in place before Part 1.</div>
-      <p class="stage-intro">Most members already have most of these from Claude Meets QBO. Verify before the call so you're not troubleshooting installs while we're building.</p>
+      <div class="stage-meta">Four things to have in place before Part 1.</div>
+      <p class="stage-intro">Most members already have most of these. Verify before the call so you're not troubleshooting installs while we're building.</p>
 
       <div class="checklist">
         <div class="check-card">
           <div class="check-num">01</div>
           <div class="check-name">Claude Pro or Max</div>
-          <div class="check-desc">You're a member, you've got this. Pro is plenty for this work.</div>
+          <div class="check-desc">You're a member, you've got this. Pro is plenty for what we're doing today.</div>
         </div>
         <div class="check-card">
           <div class="check-num">02</div>
-          <div class="check-name">Node.js</div>
-          <div class="check-desc">Installed in Claude Meets QBO so the QBO MCP could run. Same install works for Claude Code.</div>
+          <div class="check-name">Claude Desktop (updated)</div>
+          <div class="check-desc">Install from claude.ai/download, or if you already have it, check for updates. The mid-April 2026 release added the "Code" tab &mdash; that's where everything happens. No terminal, no Node.js, no npm.</div>
         </div>
         <div class="check-card">
           <div class="check-num">03</div>
-          <div class="check-name">Claude Code</div>
-          <div class="check-desc">npm install -g @anthropic-ai/claude-code &mdash; or the native installer if you skipped Node.</div>
+          <div class="check-name">GitHub Account</div>
+          <div class="check-desc">Set up in Claude Meets QBO Part 2. No account yet? Go to github.com and click Sign up &mdash; free, takes two minutes.</div>
         </div>
         <div class="check-card">
           <div class="check-num">04</div>
-          <div class="check-name">GitHub Account</div>
-          <div class="check-desc">Set up in Claude Meets QBO Part 2. We'll use it heavily in Part 2 of this series.</div>
-        </div>
-        <div class="check-card">
-          <div class="check-num">05</div>
           <div class="check-name">A Real Domain</div>
           <div class="check-desc">Registered at a real registrar where YOU control the DNS. Not a website builder.</div>
         </div>
@@ -472,8 +501,10 @@
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
-            <h4>View it in the preview pane (or your browser)</h4>
-            <p>Claude Code Desktop has a built-in preview pane that renders HTML right inside the app. Or double-click the index.html file in your file browser to open it in any browser &mdash; exactly how your clients will see it when it's live. Enter a loan amount, a rate, a term. Confirm the math. A real, interactive financial tool that didn't exist 60 seconds ago.</p>
+            <h4>View it</h4>
+            <p>Your new <code>index.html</code> file is right there in the project folder you opened &mdash; Claude Code shows it in the file tree on the left side of the window. Click it to see the code. Use the preview pane to see the calculator running right inside Claude Desktop.</p>
+            <p>Want to see it the way your clients will? Open your file browser (Finder on Mac, Explorer on Windows), navigate to the same folder, double-click <code>index.html</code>. Same calculator, real browser.</p>
+            <p>Either way: enter a loan amount, a rate, a term. Confirm the math. A real, interactive financial tool that didn't exist 60 seconds ago.</p>
           </div>
         </div>
         <div class="step">
@@ -689,6 +720,71 @@ TTL:   default</div>
       <p class="footer-meta">The Claude Supremacy &nbsp;&middot;&nbsp; April &ndash; May 2026 &nbsp;&middot;&nbsp; &copy; 2026 Nerd Enterprises, Inc.</p>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      var copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+      var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+      function getPromptText(promptEl) {
+        var clone = promptEl.cloneNode(true);
+        var label = clone.querySelector('.prompt-label');
+        if (label) label.remove();
+        var btn = clone.querySelector('.copy-btn');
+        if (btn) btn.remove();
+        return clone.textContent.trim();
+      }
+
+      document.querySelectorAll('.prompt').forEach(function (prompt) {
+        var btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Copy prompt to clipboard');
+        btn.setAttribute('title', 'Copy to clipboard');
+        btn.innerHTML = copyIcon;
+        prompt.appendChild(btn);
+
+        btn.addEventListener('click', function () {
+          var text = getPromptText(prompt);
+          var onSuccess = function () {
+            btn.innerHTML = checkIcon;
+            btn.classList.add('copied');
+            btn.setAttribute('title', 'Copied!');
+            setTimeout(function () {
+              btn.innerHTML = copyIcon;
+              btn.classList.remove('copied');
+              btn.setAttribute('title', 'Copy to clipboard');
+            }, 1600);
+          };
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
+              // Fallback for older browsers or restricted contexts
+              fallbackCopy(text, onSuccess);
+            });
+          } else {
+            fallbackCopy(text, onSuccess);
+          }
+        });
+      });
+
+      function fallbackCopy(text, onSuccess) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          onSuccess();
+        } catch (e) {
+          // Silent fail; the text is selected so user can Cmd/Ctrl+C
+        }
+        document.body.removeChild(ta);
+      }
+    })();
+  </script>
 
 </body>
 </html>
