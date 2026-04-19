@@ -90,6 +90,16 @@
     border-radius: 6px;
     background: var(--warm-cream);
     border-top: 4px solid var(--nerd-green);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+    display: block;
+  }
+  .arc-step:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--med-shadow);
+    background: white;
   }
   .arc-step:nth-child(2) { border-top-color: var(--nerd-blue); }
   .arc-step:nth-child(3) { border-top-color: var(--deep-green); }
@@ -448,6 +458,45 @@
     .loop-diagram { flex-direction: column; }
     .loop-arrow { transform: rotate(90deg); }
   }
+
+  /* BACK TO TOP */
+  .back-to-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--nerd-green);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 176, 30, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s ease, visibility 0.25s;
+    z-index: 100;
+  }
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .back-to-top:hover {
+    background: var(--deep-green);
+    box-shadow: 0 6px 18px rgba(2, 141, 25, 0.5);
+  }
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
+  }
+  @media (max-width: 600px) {
+    .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+  }
 </style>
 </head>
 <body>
@@ -466,21 +515,21 @@
   <section class="arc">
     <div class="container">
       <div class="arc-inner">
-        <div class="arc-step">
+        <a href="#build" class="arc-step">
           <div class="arc-label">PART 1 &middot; APRIL 23</div>
           <div class="arc-title">Build the App</div>
           <div class="arc-desc">Claude Code on your machine</div>
-        </div>
-        <div class="arc-step">
+        </a>
+        <a href="#ship" class="arc-step">
           <div class="arc-label">PART 2 &middot; APRIL 28</div>
           <div class="arc-title">Ship It Live</div>
           <div class="arc-desc">Drag-and-drop to GitHub</div>
-        </div>
-        <div class="arc-step">
+        </a>
+        <a href="#level-up" class="arc-step">
           <div class="arc-label">PART 3 &middot; MAY</div>
           <div class="arc-title">Level Up the Loop</div>
           <div class="arc-desc">Claude Code + GitHub = 30s</div>
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -812,6 +861,11 @@ TTL:   default</div>
     </div>
   </footer>
 
+  <!-- BACK TO TOP -->
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top" title="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
   <script>
     (function () {
       var copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
@@ -902,6 +956,23 @@ TTL:   default</div>
           // Silent fail; the text is selected so user can Cmd/Ctrl+C
         }
         document.body.removeChild(ta);
+      }
+
+      // Back-to-top button
+      var backToTop = document.getElementById('backToTop');
+      if (backToTop) {
+        var toggleVisibility = function () {
+          if (window.scrollY > 400) {
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        };
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
+        toggleVisibility();
+        backToTop.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
       }
     })();
   </script>
