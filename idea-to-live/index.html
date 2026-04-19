@@ -347,6 +347,8 @@
     padding: 24px 26px;
     border-top: 4px solid var(--nerd-green);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
   }
   .use-card:nth-child(even) { border-top-color: var(--nerd-blue); }
   .use-card:hover { transform: translateY(-3px); box-shadow: var(--med-shadow); }
@@ -363,7 +365,55 @@
     font-size: 18px; font-weight: bold;
     color: var(--charcoal); margin-bottom: 8px;
   }
-  .use-desc { font-size: 14.5px; line-height: 1.55; opacity: 0.85; }
+  .use-desc {
+    font-size: 14.5px; line-height: 1.55; opacity: 0.85;
+    flex: 1;
+    margin-bottom: 16px;
+  }
+  .use-prompt-hidden { display: none; }
+  .copy-prompt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: var(--deep-green);
+    border: 1.5px solid var(--nerd-green);
+    border-radius: 6px;
+    padding: 9px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    align-self: flex-start;
+  }
+  .copy-prompt-btn:hover {
+    background: var(--nerd-green);
+    color: white;
+  }
+  .use-card:nth-child(even) .copy-prompt-btn {
+    color: var(--deep-blue);
+    border-color: var(--nerd-blue);
+  }
+  .use-card:nth-child(even) .copy-prompt-btn:hover {
+    background: var(--nerd-blue);
+    color: white;
+  }
+  .copy-prompt-btn.copied {
+    background: var(--nerd-green);
+    color: white;
+    border-color: var(--nerd-green);
+  }
+  .use-card:nth-child(even) .copy-prompt-btn.copied {
+    background: var(--nerd-blue);
+    border-color: var(--nerd-blue);
+  }
+  .copy-prompt-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
   .use-cta {
     margin-top: 32px; text-align: center;
     font-style: italic;
@@ -674,37 +724,78 @@ TTL:   default</div>
         <div class="use-card">
           <div class="use-num">USE CASE 01</div>
           <div class="use-title">Entity Comparison Calculator</div>
-          <div class="use-desc">Sole prop vs. LLC vs. S-corp vs. C-corp &mdash; projected revenue in, tax implications side by side. We build this live in Part 3. Advisory gold, magnet for higher-value clients.</div>
+          <div class="use-desc">Sole prop vs. LLC vs. S-corp vs. C-corp. Projected revenue and expenses in, side-by-side tax implications out. The conversation every prospect needs before deciding how to structure, and most accountants have with pen and paper.</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML entity comparison calculator for U.S. small businesses. Let the user enter projected annual revenue and expenses. Calculate and display side-by-side 2026 tax implications for four entity types: sole proprietorship (Schedule C with SE tax), single-member LLC (same as sole prop by default), S-corporation (assume a 50/50 salary/distribution split with FICA on salary only), and C-corporation (21% flat corporate tax plus qualified dividend tax at 15% on distributions). Show total tax burden and net take-home for each. Include a state income tax field defaulting to California at 9.3% and use it in all calculations. Use a clean side-by-side comparison table. Highlight the entity with the lowest total tax burden as "recommended." Include a clear disclaimer that this is for illustrative purposes only and actual tax depends on many factors. Style it cleanly with soft shadows, rounded corners, a professional palette suitable for an accounting practice. Mobile-friendly. Single index.html, no frameworks.</div>
         </div>
+
         <div class="use-card">
           <div class="use-num">USE CASE 02</div>
-          <div class="use-title">1099 Threshold Checker (2026 OBBBA)</div>
-          <div class="use-desc">Paste vendor list and payments. Tool flags who needs a 1099 under the new $2,000 threshold. Timely, useful, naturally points clients toward Clean 1099s.</div>
+          <div class="use-title">Reasonable Compensation Estimator</div>
+          <div class="use-desc">Officer role, industry, and location in, a defensible salary range out with plain-English methodology. The S-corp reasonable comp question has one right answer for each client and most owners get it wrong because they're guessing. A tool that produces a documented range helps you answer it once, defensibly, every time.</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML Reasonable Compensation Estimator for S-corporation officers. User selects their role from a dropdown (CEO, CFO, Operations Manager, Sales Manager, Consultant, Professional Services - Attorney/CPA/etc., Skilled Trade, Other), enters their industry, state, metropolitan area or ZIP code, years of experience, and approximate weekly hours. The tool returns a reasonable compensation range with a low, median, and high estimate, along with a plain-English explanation of the methodology — referencing the three IRS-approved approaches (cost approach, market approach, income approach) and noting which factors drove the range. Include a brief section on documentation best practices the owner should keep. Add a disclaimer that this is for planning purposes only and that actual reasonable compensation depends on specific facts and circumstances; recommend formal documentation through a qualified professional for audit defense. Professional palette, clean table layout, mobile-friendly. Single index.html, no frameworks.</div>
         </div>
+
         <div class="use-card">
           <div class="use-num">USE CASE 03</div>
-          <div class="use-title">S-Corp Reasonable Comp Optimizer</div>
-          <div class="use-desc">Interactive calculator for the salary-vs-distribution split. Every S-corp owner asks this. The accountant with this tool on their site is the specialist.</div>
+          <div class="use-title">Bookkeeping Cleanup Estimator</div>
+          <div class="use-desc">Six to eight questions about a prospect's current state, a ballpark quote range out. Replaces the "just give me a quote" email chain with a qualifier a prospect runs through on their own before reaching you.</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML questionnaire that estimates the scope and cost of a bookkeeping cleanup project. Ask 6-8 questions with appropriate input types: how many bank accounts and credit cards combined (number), how many months behind on reconciliation (number), whether payroll is involved (yes/no), whether sales tax is involved (yes/no), whether inventory is involved (yes/no), approximate monthly transaction volume (dropdown: 0-50, 51-200, 201-500, 501-1000, 1000+), current entity type (dropdown), and whether prior-year tax returns are filed and matching QBO (yes/no/unsure). Based on answers, output a ballpark hours estimate and a cost range. Include a user-adjustable hourly rate field defaulting to $200/hr. Briefly explain the methodology behind the estimate so the prospect understands it's directional. Professional palette, clean card layout, mobile-friendly, single index.html. Include a clear CTA at the end: "Ready to get started? Contact us." with a placeholder the user can replace with their actual contact or booking link. No frameworks.</div>
         </div>
+
         <div class="use-card">
           <div class="use-num">USE CASE 04</div>
-          <div class="use-title">Bookkeeping Cleanup Estimator</div>
-          <div class="use-desc">Six to eight questions, ballpark quote range. Stops the "just give me a quote" loop dead. Functions as a qualifier before the prospect ever talks to you.</div>
+          <div class="use-title">Discovery Questionnaire</div>
+          <div class="use-desc">An intake form with branching logic that asks smart follow-up questions based on prior answers, then delivers a clean summary. Replaces a static Google Form with something that feels like the premium intake a high-end firm would have.</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML prospect discovery questionnaire for an accounting firm. The questionnaire should feel premium and consultative, not clinical. Start with the prospect's name, business name, email, and phone. Then ask about the business: entity type, industry, annual revenue range, number of employees, years in business. Then branch based on answers. If they have employees, ask about payroll provider and pain points with it. If entity type is S-corp or C-corp, ask about reasonable comp and distribution practices. If they mention multiple states, ask about nexus and compliance concerns. For everyone, ask: what's working in your current accounting setup, what's not working, what keeps you up at night financially, and what would a successful engagement with a new accountant look like in 12 months. At the end, show a clean summary of their answers that the prospect can review, and allow them to submit it to a provided email address (use a mailto link as a placeholder). Professional, warm, modern palette. Mobile-friendly. Single index.html, no frameworks.</div>
         </div>
+
         <div class="use-card">
           <div class="use-num">USE CASE 05</div>
-          <div class="use-title">Discovery Questionnaire</div>
-          <div class="use-desc">Branching logic, smart follow-up questions based on prior answers, clean summary delivered to your inbox. Premium intake before they've paid you a dollar.</div>
+          <div class="use-title">Cash Flow Runway Visualizer</div>
+          <div class="use-desc">Cash on hand, monthly burn, expected receivables in &mdash; runway chart by month out. A tangible deliverable for every advisory conversation, especially useful for the clients who only know their cash position as "I think we're fine?"</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML cash flow runway visualizer for small business advisory clients. The user enters: current cash on hand, average monthly operating expenses (burn rate), projected monthly revenue for the next 12 months (with a simple input method — e.g., "same as current" with an adjustable percentage growth/decline, or an option to enter each month individually), and any known one-time cash events (receivables coming in, large expenses going out). The tool generates a 12-month cash position chart using Chart.js, with a clear "danger zone" line showing when cash drops below a user-adjustable minimum safe balance (default: 2 months of operating expenses). Color the monthly bars green (above danger zone), yellow (close), or red (below). Include a "what-if" revenue slider that lets the user adjust overall revenue by plus or minus 30% and watch the chart update. Display the runway in months as a prominent number at the top. Clean, modern palette suitable for client-facing advisory meetings. Mobile-friendly. Single index.html with Chart.js via CDN.</div>
         </div>
+
         <div class="use-card">
           <div class="use-num">USE CASE 06</div>
-          <div class="use-title">Cash Flow Runway Visualizer</div>
-          <div class="use-desc">Cash on hand, monthly burn, expected receivables &rarr; runway by month with a chart. Tangible advisory deliverable for every client conversation.</div>
+          <div class="use-title">"Is Your Bookkeeping Healthy?" Diagnostic</div>
+          <div class="use-desc">A ten-question scored self-assessment producing a tailored recommendation. The interactive version of every "free download" PDF a firm puts on their site that prospects rarely finish &mdash; this one they actually complete.</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML interactive diagnostic quiz titled "Is Your Bookkeeping Healthy?" Ten yes/no questions, one at a time with a progress indicator, covering: bank reconciliations done monthly, books closed quarterly, A/R under 60 days, A/P current, payroll tax deposits on time, 1099s filed timely last year, financial statements available within a week of close, inventory accurate (or N/A), sales tax filed and paid on time (or N/A), profit margins reviewed monthly. Score each question yes=1, no=0, N/A=1. Based on total score out of 10, display one of four results: "Healthy" (9-10), "Mostly on track" (7-8), "Needs attention" (4-6), or "Cleanup recommended" (0-3). Each result gets a 2-3 sentence tailored recommendation. At the end, include an optional email capture field (use a simple input with a note that this needs to be wired to an actual form handler like Formspree or similar). Include a clear CTA button with placeholder text the user can customize. Professional, clean palette, mobile-friendly, single index.html, no frameworks.</div>
         </div>
+
         <div class="use-card">
           <div class="use-num">USE CASE 07</div>
-          <div class="use-title">"Is Your Bookkeeping Healthy?" Diagnostic</div>
-          <div class="use-desc">Ten-question scored self-assessment with tailored recommendations. Interactive lead magnet &mdash; the kind people actually finish. Captures email at the end.</div>
+          <div class="use-title">Subscription Tier Calculator</div>
+          <div class="use-desc">Prospect picks services they need across three tiers, tool returns the right tier and monthly price. A replacement for the "let me send you a proposal" ritual &mdash; works as a real-time scoping tool on a prospect call or embedded on the pricing page of a firm's website.</div>
+          <button class="copy-prompt-btn" type="button" aria-label="Copy starter prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy starter prompt
+          </button>
+          <div class="use-prompt-hidden">Build me a single-page HTML subscription tier calculator for an accounting firm. The firm has three service tiers: Tier 1 (Foundation - bookkeeping, monthly financials, year-end taxes), Tier 2 (Growth - everything in Tier 1 plus quarterly advisory meetings, cash flow forecasting, tax planning), and Tier 3 (Scale - everything in Tier 2 plus monthly advisory meetings, fractional CFO services, strategic planning). Display all services across all tiers as draggable chips or checkboxes. The prospect selects everything they need. The tool determines which tier includes everything they selected and recommends it with a monthly price. Include user-editable service names and tier prices near the top so the accountant can customize the tool for their specific firm before publishing. If the prospect selects services that span multiple tiers, recommend the highest tier that covers all their needs. Display the recommendation with a clear explanation, full list of what's included, and a CTA button linking to a placeholder booking link. Clean, modern palette, mobile-friendly, single index.html, no frameworks.</div>
         </div>
       </div>
 
@@ -759,7 +850,36 @@ TTL:   default</div>
 
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
-              // Fallback for older browsers or restricted contexts
+              fallbackCopy(text, onSuccess);
+            });
+          } else {
+            fallbackCopy(text, onSuccess);
+          }
+        });
+      });
+
+      // Use case "Copy starter prompt" buttons
+      document.querySelectorAll('.copy-prompt-btn').forEach(function (btn) {
+        var card = btn.closest('.use-card');
+        if (!card) return;
+        var hiddenPrompt = card.querySelector('.use-prompt-hidden');
+        if (!hiddenPrompt) return;
+
+        var originalHTML = btn.innerHTML;
+
+        btn.addEventListener('click', function () {
+          var text = hiddenPrompt.textContent.trim();
+          var onSuccess = function () {
+            btn.innerHTML = checkIcon + ' Copied!';
+            btn.classList.add('copied');
+            setTimeout(function () {
+              btn.innerHTML = originalHTML;
+              btn.classList.remove('copied');
+            }, 1800);
+          };
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
               fallbackCopy(text, onSuccess);
             });
           } else {
