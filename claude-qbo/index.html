@@ -1036,7 +1036,16 @@ Please add the following new tools to the existing server:
    transaction_date (required), memo (optional)
    Uses QBO v3 API: POST /v3/company/{realmId}/bill
 
-6. send_invoice_email — sends an existing invoice by email
+6. create_account — creates a new account in the Chart of Accounts
+   Parameters: name (required), account_type (required — e.g.
+   "Income", "Expense", "Accounts Receivable", "Accounts Payable",
+   "Bank", "Credit Card", "Other Current Asset", "Fixed Asset",
+   "Other Current Liability", "Long Term Liability", "Equity"),
+   account_sub_type (optional — QBO sub-type for the account),
+   description (optional)
+   Uses QBO v3 API: POST /v3/company/{realmId}/account
+
+7. send_invoice_email — sends an existing invoice by email
    Parameters: invoice_id (required), email (optional —
    uses customer email on file if not provided)
    Uses QBO v3 API: POST /v3/company/{realmId}/invoice/{id}/send
@@ -1052,7 +1061,7 @@ After adding the tools, tell me how to restart the MCP server
 in Claude Desktop so the new tools are picked up.</div>
       </div>
 
-      <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>What happens after you run this:</strong> Claude Code edits your existing <code>index.js</code> (or equivalent) and adds the six write tool handlers. Your read tools keep working. Restart Claude Desktop, open a new chat, and all the prompts in Step 9's write access section will be available.</div></div>
+      <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>What happens after you run this:</strong> Claude Code edits your existing <code>index.js</code> (or equivalent) and adds the seven write tool handlers. Your read tools keep working. Restart Claude Desktop, open a new chat, and all the prompts in Step 9's write access section will be available.</div></div>
 
       <div class="warn-box amber"><div class="warn-icon">⚠</div><div><strong>Test in sandbox first.</strong> Make sure you're on <code>QBO_ENVIRONMENT=sandbox</code> in your .env before testing write tools. Creating a real customer or sending a real invoice to a real client by accident is not the demo you want to run on a Thursday morning.</div></div>
     </div>
