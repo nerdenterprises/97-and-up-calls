@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🤓 Claude Meets QBO — The 12 Steps for Accountants</title>
+<title>Claude Meets QBO — The 12 Steps for Accountants</title>
+<link rel="icon" type="image/png" href="https://97.nerdenterprises.com/wp-content/uploads/nerd-favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1008,19 +1009,34 @@ Please add the following new tools to the existing server:
    phone (optional), billing_address (optional)
    Uses QBO v3 API: POST /v3/company/{realmId}/customer
 
-2. create_invoice — creates and optionally sends an invoice
+2. update_customer — updates an existing customer's info
+   Parameters: customer_id (required), display_name (optional),
+   email (optional), phone (optional), billing_address (optional)
+   Fetches the current customer first to get the SyncToken
+   (required for updates), then sends a full update object
+   Uses QBO v3 API: POST /v3/company/{realmId}/customer
+   (with Id and SyncToken in the body)
+
+3. create_product_service — creates a new product or service item
+   Parameters: name (required), type (required — "Service" or
+   "Inventory" or "NonInventory"), unit_price (optional),
+   income_account_name (optional — maps to a QBO income account),
+   description (optional)
+   Uses QBO v3 API: POST /v3/company/{realmId}/item
+
+4. create_invoice — creates and optionally sends an invoice
    Parameters: customer_ref (required), line_items (required
    — array of description, amount, and optional service date),
    due_date (optional), send_email (optional boolean)
    Uses QBO v3 API: POST /v3/company/{realmId}/invoice
 
-3. create_bill — logs a vendor bill
+5. create_bill — logs a vendor bill
    Parameters: vendor_name (required), amount (required),
    category (required — maps to QBO account name),
    transaction_date (required), memo (optional)
    Uses QBO v3 API: POST /v3/company/{realmId}/bill
 
-4. send_invoice_email — sends an existing invoice by email
+6. send_invoice_email — sends an existing invoice by email
    Parameters: invoice_id (required), email (optional —
    uses customer email on file if not provided)
    Uses QBO v3 API: POST /v3/company/{realmId}/invoice/{id}/send
@@ -1036,7 +1052,7 @@ After adding the tools, tell me how to restart the MCP server
 in Claude Desktop so the new tools are picked up.</div>
       </div>
 
-      <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>What happens after you run this:</strong> Claude Code edits your existing <code>index.js</code> (or equivalent) and adds the four write tool handlers. Your read tools keep working. Restart Claude Desktop, open a new chat, and all the prompts in Step 9's write access section will be available.</div></div>
+      <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>What happens after you run this:</strong> Claude Code edits your existing <code>index.js</code> (or equivalent) and adds the six write tool handlers. Your read tools keep working. Restart Claude Desktop, open a new chat, and all the prompts in Step 9's write access section will be available.</div></div>
 
       <div class="warn-box amber"><div class="warn-icon">⚠</div><div><strong>Test in sandbox first.</strong> Make sure you're on <code>QBO_ENVIRONMENT=sandbox</code> in your .env before testing write tools. Creating a real customer or sending a real invoice to a real client by accident is not the demo you want to run on a Thursday morning.</div></div>
     </div>
