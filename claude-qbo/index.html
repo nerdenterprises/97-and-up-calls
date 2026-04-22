@@ -1050,6 +1050,21 @@ Please add the following new tools to the existing server:
    uses customer email on file if not provided)
    Uses QBO v3 API: POST /v3/company/{realmId}/invoice/{id}/send
 
+8. import_transactions_from_csv — reads a CSV or Excel file and
+   imports transactions into QBO via the batch API
+   Parameters: file_path (required — full path to the CSV or
+   Excel file on your machine), transaction_type (required —
+   "Expense", "Bill", or "JournalEntry"), bank_account_name
+   (required — the QBO account to import into, e.g. "Checking"),
+   dry_run (optional boolean — if true, shows what would be
+   imported without posting anything to QBO)
+   Behavior: reads each row, maps description/amount/date columns
+   to QBO transaction fields, looks up the chart of accounts to
+   suggest categories based on transaction descriptions, then
+   posts via POST /v3/company/{realmId}/batch
+   Note: works best for expenses and bills; bank feed matching
+   happens automatically in QBO after import
+
 Important:
 - The existing OAuth tokens and auth logic must stay unchanged
 - The existing read tools must keep working
@@ -1061,7 +1076,7 @@ After adding the tools, tell me how to restart the MCP server
 in Claude Desktop so the new tools are picked up.</div>
       </div>
 
-      <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>What happens after you run this:</strong> Claude Code edits your existing <code>index.js</code> (or equivalent) and adds the seven write tool handlers. Your read tools keep working. Restart Claude Desktop, open a new chat, and all the prompts in Step 9's write access section will be available.</div></div>
+      <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>What happens after you run this:</strong> Claude Code edits your existing <code>index.js</code> (or equivalent) and adds the eight write tool handlers. Your read tools keep working. Restart Claude Desktop, open a new chat, and all the prompts in Step 9's write access section will be available.</div></div>
 
       <div class="warn-box amber"><div class="warn-icon">⚠</div><div><strong>Test in sandbox first.</strong> Make sure you're on <code>QBO_ENVIRONMENT=sandbox</code> in your .env before testing write tools. Creating a real customer or sending a real invoice to a real client by accident is not the demo you want to run on a Thursday morning.</div></div>
     </div>
@@ -1302,6 +1317,22 @@ as a bill in QuickBooks dated today.</div>
     </div>
 
     <div class="warn-box green"><div class="warn-icon">✦</div><div><strong>Every accountant has a pile of receipts they haven't logged.</strong> The idea that you can just <em>talk</em> your expenses into QuickBooks — no app, no scanning, no manual entry — is the moment this stops feeling like a demo and starts feeling like a practice transformation. Run this one on the call and watch the chat light up.</div></div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">The Clean Books Preview — Import a Bank CSV</span><button class="copy-btn" onclick="copyCode(this,'p9-11')">Copy</button></div>
+      <div class="code-content" id="p9-11">I have a CSV export of my bank statement saved on my 
+desktop at ~/Desktop/bank-statement-march.csv
+
+Import it into QuickBooks as expenses into my Checking 
+account. Look up my chart of accounts and suggest the 
+right category for each transaction based on the 
+description. Run it as a dry_run first so I can review 
+your categorization before anything gets posted.</div>
+    </div>
+
+    <div class="warn-box amber"><div class="warn-icon">⚠</div><div><strong>Always dry_run first.</strong> Review Claude's suggested categories before confirming the import. Once you're happy with the categorization, run it again without the dry_run flag and the transactions post to QBO. Your bank feed will match them automatically.</div></div>
+
+    <div class="warn-box blue"><div class="warn-icon">ℹ</div><div><strong>What this is a preview of.</strong> This raw tool gets the job done — but the full version with a clean review UI, one-click accept per line, and smart matching is what Clean Books is being built to do. You're seeing the engine. The dashboard is coming.</div></div>
 
     <button class="mark-done-btn" onclick="markDone(9)">✓ &nbsp;I've had my first conversation with my data</button>
   </div></div>
