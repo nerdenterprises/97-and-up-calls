@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Own QBO MCP Server — Clean by Nerd Enterprises</title>
+<meta name="description" content="A 12-step guide to building a custom Claude-to-QuickBooks MCP server. Free. No code you have to write.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --green: #22B14C;
+    --green-dark: #1B8C3C;
+    --green-darker: #0F6B2A;
+    --green-bg: #F4FBF6;
+    --green-tint: #E8F6EC;
+    --blue: #4DAFE6;
+    --blue-dark: #2E8FCC;
+    --yellow: #FFD93D;
+    --yellow-bg: #FFF8DD;
+    --brown: #8B4513;
+    --red: #DC2626;
+    --red-bg: #FEF2F2;
+    --amber: #D97706;
+    --amber-bg: #FEF3C7;
+    --text: #1F2937;
+    --text-muted: #6B7280;
+    --text-dim: #9CA3AF;
+    --border: #E5E7EB;
+    --border-soft: #F3F4F6;
+    --bg: #FFFFFF;
+    --bg-soft: #FAFBFA;
+    --shadow-sm: 0 1px 2px rgba(15, 30, 20, 0.05);
+    --shadow-md: 0 4px 12px rgba(15, 30, 20, 0.06);
+    --shadow-lg: 0 12px 32px rgba(15, 30, 20, 0.08);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-lg: 20px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+  body {
+    margin: 0;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ───── HEADER ───── */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .brand img { height: 36px; width: auto; }
+  .brand-text {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+  .brand-text small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .progress-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--green-tint);
+    border: 1px solid var(--green);
+    color: var(--green-darker);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .progress-bar {
+    width: 80px;
+    height: 6px;
+    background: rgba(34, 177, 76, 0.18);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  /* ───── HERO ───── */
+  .hero {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 80px 28px 40px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-dark);
+    background: var(--green-tint);
+    padding: 8px 18px;
+    border-radius: 999px;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 24px;
+    color: var(--text);
+  }
+  .hero h1 .accent {
+    color: var(--green);
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 .accent::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: var(--yellow);
+    z-index: -1;
+    opacity: 0.55;
+    border-radius: 4px;
+  }
+  .hero p.lede {
+    font-size: clamp(17px, 2vw, 21px);
+    color: var(--text-muted);
+    max-width: 680px;
+    margin: 0 auto 36px;
+    line-height: 1.5;
+  }
+
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .meta-chip .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--green); }
+  .meta-chip .dot.blue { background: var(--blue); }
+  .meta-chip .dot.yellow { background: var(--yellow); }
+
+  .hero-cta {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--green);
+    color: white;
+    box-shadow: 0 4px 14px rgba(34, 177, 76, 0.35);
+  }
+  .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(34, 177, 76, 0.45); }
+  .btn-ghost {
+    background: white;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg-soft); border-color: var(--green); color: var(--green-dark); }
+
+  /* ───── ARCHITECT SECTION ───── */
+  .architect {
+    max-width: 920px;
+    margin: 30px auto 60px;
+    padding: 0 28px;
+  }
+  .architect-card {
+    background: linear-gradient(135deg, #FAFFFB 0%, #F4FBF6 100%);
+    border: 1px solid var(--green-tint);
+    border-left: 6px solid var(--green);
+    border-radius: var(--radius);
+    padding: 32px 36px;
+    position: relative;
+  }
+  .architect-card .label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-dark);
+    margin-bottom: 12px;
+  }
+  .architect-card h2 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    margin: 0 0 14px;
+    line-height: 1.25;
+    color: var(--text);
+  }
+  .architect-card p {
+    margin: 0;
+    font-size: 17px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .architect-card p strong { color: var(--green-dark); }
+
+  /* ───── STEP NAV ───── */
+  .step-nav {
+    max-width: 1100px;
+    margin: 0 auto 60px;
+    padding: 0 28px;
+  }
+  .step-nav-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .step-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 10px;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .step-dot {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  .step-dot:hover {
+    border-color: var(--green);
+    color: var(--green-dark);
+    transform: scale(1.08);
+  }
+  .step-dot.done {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .step-dot.done::after {
+    content: "✓";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    background: var(--blue);
+    border: 2px solid white;
+    border-radius: 999px;
+    color: white;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+  }
+
+  /* ───── STEPS ───── */
+  main.steps {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 28px 80px;
+  }
+
+  .step {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .step:hover { box-shadow: var(--shadow-md); }
+  .step.is-done { border-color: var(--green); background: var(--green-bg); }
+
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 28px;
+    cursor: pointer;
+    user-select: none;
+    background: white;
+    transition: background 0.2s ease;
+  }
+  .step.is-done .step-head { background: var(--green-bg); }
+  .step-head:hover { background: var(--bg-soft); }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--green);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 4px 10px rgba(34, 177, 76, 0.25);
+  }
+  .step-num small {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    opacity: 0.85;
+    margin-bottom: 3px;
+  }
+  .step-num span { font-size: 26px; }
+
+  .step-title {
+    flex: 1;
+    min-width: 0;
+  }
+  .step-title h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .step-title .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .step-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .step-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .step-check input { display: none; }
+  .step-check .checkbox {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 7px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .step-check input:checked + .checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .step-check input:checked + .checkbox::after {
+    content: "✓";
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .step-check:hover .checkbox { border-color: var(--green); }
+
+  .step-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--green-tint);
+    color: var(--green-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    font-size: 12px;
+  }
+  .step.is-open .step-toggle { transform: rotate(180deg); }
+
+  .step-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+  .step.is-open .step-body { max-height: 6000px; }
+
+  .step-content {
+    padding: 8px 32px 36px;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .step-content p { margin: 16px 0; line-height: 1.65; }
+  .step-content p.lede { font-size: 17px; color: var(--text); margin-top: 24px; }
+  .step-content h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  ol.action-list {
+    counter-reset: actionnum;
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+  }
+  ol.action-list li {
+    counter-increment: actionnum;
+    padding: 12px 14px 12px 50px;
+    margin: 8px 0;
+    background: var(--bg-soft);
+    border-radius: var(--radius-sm);
+    position: relative;
+    line-height: 1.5;
+  }
+  ol.action-list li::before {
+    content: counter(actionnum);
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    width: 26px;
+    height: 26px;
+    background: var(--green);
+    color: white;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  ol.action-list li code {
+    background: white;
+    border: 1px solid var(--border);
+  }
+
+  code, .mono { font-family: 'JetBrains Mono', Consolas, Monaco, monospace; }
+  p code, li code, td code {
+    background: var(--bg-soft);
+    border: 1px solid var(--border-soft);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.88em;
+    color: var(--green-darker);
+  }
+
+  /* ───── PLATFORM TABS ───── */
+  .platform-tabs {
+    margin: 22px 0;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .platform-tabs-header {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .platform-tabs input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .platform-tabs label {
+    flex: 1;
+    padding: 14px 20px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-muted);
+    border-right: 1px solid var(--border);
+    transition: all 0.2s ease;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .platform-tabs label:last-of-type { border-right: none; }
+  .platform-tabs label:hover { color: var(--text); background: var(--bg-soft); }
+  .platform-tabs:has(input[value="mac"]:checked) label[for$="-mac"],
+  .platform-tabs:has(input[value="win"]:checked) label[for$="-win"] {
+    background: var(--green-tint);
+    color: var(--green-darker);
+    border-bottom: 2px solid var(--green);
+    margin-bottom: -1px;
+  }
+  .platform-content { padding: 22px 26px; display: none; }
+  .platform-tabs:has(input[value="mac"]:checked) .platform-content.mac { display: block; }
+  .platform-tabs:has(input[value="win"]:checked) .platform-content.win { display: block; }
+  .platform-content ol { padding-left: 22px; margin: 8px 0; }
+  .platform-content ol li { margin: 6px 0; }
+  .platform-content kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ───── PROMPT BLOCKS ───── */
+  .prompt {
+    margin: 22px 0;
+    background: linear-gradient(135deg, #F0F8F2 0%, #E8F6EC 100%);
+    border: 1px solid var(--green);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: var(--green);
+    color: white;
+  }
+  .prompt-header .label {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .prompt-header .label::before {
+    content: "▸";
+    color: var(--yellow);
+  }
+  .copy-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .copy-btn:hover { background: rgba(255, 255, 255, 0.3); }
+  .copy-btn.copied { background: var(--yellow); color: var(--text); border-color: var(--yellow); }
+  .prompt pre {
+    margin: 0;
+    padding: 22px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--green-darker);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  /* ───── CALLOUTS ───── */
+  .callout {
+    margin: 22px 0;
+    padding: 18px 22px 18px 24px;
+    border-radius: var(--radius);
+    border-left: 6px solid;
+  }
+  .callout.info { background: #EFF8FE; border-color: var(--blue); }
+  .callout.success { background: var(--green-bg); border-color: var(--green); }
+  .callout.warn { background: var(--amber-bg); border-color: var(--amber); }
+  .callout.danger { background: var(--red-bg); border-color: var(--red); }
+  .callout .callout-label {
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .callout.info .callout-label { color: var(--blue-dark); }
+  .callout.success .callout-label { color: var(--green-dark); }
+  .callout.warn .callout-label { color: var(--amber); }
+  .callout.danger .callout-label { color: var(--red); }
+  .callout p { margin: 4px 0 0; line-height: 1.55; }
+
+  .env-preview {
+    background: #1A2920;
+    color: #A8E6BA;
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 18px 0;
+    overflow-x: auto;
+  }
+  .env-preview .key { color: var(--yellow); }
+  .env-preview .placeholder { color: #6FAA80; }
+
+  /* ───── FOOTER ───── */
+  footer {
+    background: var(--bg-soft);
+    border-top: 1px solid var(--border);
+    padding: 60px 28px 50px;
+    text-align: center;
+  }
+  footer .inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  footer img { height: 56px; margin-bottom: 22px; }
+  footer h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+  footer p {
+    color: var(--text-muted);
+    margin: 0 0 28px;
+    line-height: 1.6;
+  }
+  footer .footer-cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  footer .copyright {
+    font-size: 13px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+
+  /* ───── BIG QUOTE ───── */
+  .big-quote {
+    max-width: 880px;
+    margin: 60px auto;
+    padding: 0 28px;
+    text-align: center;
+  }
+  .big-quote blockquote {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .big-quote blockquote .accent { color: var(--green); }
+  .big-quote cite {
+    display: block;
+    margin-top: 16px;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ───── MOBILE ───── */
+  @media (max-width: 720px) {
+    .site-inner { padding: 12px 18px; gap: 12px; }
+    .brand img { height: 30px; }
+    .brand-text { font-size: 13px; }
+    .progress-bar { display: none; }
+    .hero { padding: 50px 20px 30px; }
+    main.steps { padding: 0 18px 60px; }
+    .step-head { padding: 18px 18px; gap: 14px; }
+    .step-content { padding: 8px 22px 28px; }
+    .step-num { width: 48px; height: 48px; }
+    .step-num span { font-size: 22px; }
+    .step-title h3 { font-size: 17px; }
+    .step-check span:not(.checkbox) { display: none; }
+    .architect-card { padding: 24px 22px; }
+  }
+
+  /* Sandbox tip box */
+  .sandbox-tip {
+    margin: 22px 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .sandbox-tip .icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .sandbox-tip h5 {
+    font-family: 'Outfit', sans-serif;
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sandbox-tip p { margin: 0; font-size: 14.5px; color: var(--text-muted); line-height: 1.5; }
+
+  /* Print: hide nav and toggles, expand all */
+  @media print {
+    header.site, .step-nav, .progress-pill, .step-toggle, .hero-cta { display: none; }
+    .step-body { max-height: none !important; }
+    .step { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="site-inner">
+    <a href="#" class="brand">
+      <img src="clean-logo.jpg" alt="Clean by Nerd Enterprises">
+      <div class="brand-text">
+        QBO MCP Server
+        <small>Clean · by Nerd Enterprises</small>
+      </div>
+    </a>
+    <div class="progress-pill">
+      <span id="progress-text">0 of 12</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-tag">The Claude Supremacy Series · 97 &amp; Up</span>
+  <h1>
+    Build your own <span class="accent">QBO MCP server</span><br>
+    in 12 steps.
+  </h1>
+  <p class="lede">
+    A custom Claude-to-QuickBooks integration that does more than the native connector ever will. The keys are free. Claude Code writes the code. You own what you build.
+  </p>
+  <div class="hero-meta">
+    <span class="meta-chip"><span class="dot"></span>16 tools (read + write)</span>
+    <span class="meta-chip"><span class="dot blue"></span>Mac &amp; Windows</span>
+    <span class="meta-chip"><span class="dot yellow"></span>No code you write</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#step-1" class="btn btn-primary">Start with Step 1 →</a>
+    <a href="https://community.nerdenterprises.com" class="btn btn-ghost" target="_blank" rel="noopener">Join 97 &amp; Up to learn live</a>
+  </div>
+</section>
+
+<!-- ARCHITECT FRAMING -->
+<section class="architect">
+  <div class="architect-card">
+    <span class="label">The framing that matters</span>
+    <h2>You're the architect. Claude is the engineer.</h2>
+    <p>
+      You hold the blueprint &mdash; you know what you want this to do for your practice. Claude executes. Every step below is you handing Claude a piece of the blueprint and watching him build it. <strong>You don't need to know how to swing a hammer. You need to know what you're building and why.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- STEP NAV -->
+<section class="step-nav">
+  <div class="step-nav-title">Jump to a step</div>
+  <div class="step-nav-grid" id="step-nav-grid">
+    <!-- generated -->
+  </div>
+</section>
+
+<!-- STEPS -->
+<main class="steps">
+
+<!-- STEP 1 -->
+<article class="step" id="step-1" data-step="1">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>1</span></div>
+    <div class="step-title">
+      <h3>Install Node.js</h3>
+      <div class="subtitle">The runtime your MCP server needs to run.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="1"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Node.js is the runtime your MCP server needs in order to run. Install it once like any other app. You never need to touch it again after this step.</p>
+
+      <ol class="action-list">
+        <li>Go to <code>nodejs.org</code></li>
+        <li>Click the <strong>LTS</strong> version &mdash; "Recommended for most users." It auto-detects your OS</li>
+        <li>Open the installer and click through: Continue → Continue → Agree → Install</li>
+        <li>Accept all defaults. Don't change any settings</li>
+        <li>Click <strong>Close</strong> when it's done</li>
+      </ol>
+
+      <h4>Verify the installation</h4>
+      <p>This is the only time in the entire process you use a command window. Open it, type one thing, look for a number.</p>
+
+      <div class="platform-tabs">
+        <div class="platform-tabs-header">
+          <input type="radio" name="platform-1" value="mac" id="p1-mac">
+          <label for="p1-mac">🍎 Mac</label>
+          <input type="radio" name="platform-1" value="win" id="p1-win" checked>
+          <label for="p1-win">🪟 Windows</label>
+        </div>
+        <div class="platform-content mac">
+          <ol>
+            <li>Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type <strong>Terminal</strong>, press <kbd>Enter</kbd></li>
+            <li>In the black window type: <code>node --version</code></li>
+            <li>Press <kbd>Enter</kbd></li>
+          </ol>
+        </div>
+        <div class="platform-content win">
+          <ol>
+            <li>Press the <kbd>Windows</kbd> key, type <strong>cmd</strong>, press <kbd>Enter</kbd></li>
+            <li>In the black window type: <code>node --version</code></li>
+            <li>Press <kbd>Enter</kbd></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <div class="callout-label">Success looks like this</div>
+        <p>You see a version number — something like <code>v22.14.0</code>. Any number means Node.js is working. Close the window. If it says "command not found" or "not recognized," restart your computer and try again. If it still fails, ask Claude Code: <em>"I installed Node.js but node --version says command not found."</em> He'll fix it.</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 2 -->
+<article class="step" id="step-2" data-step="2">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>2</span></div>
+    <div class="step-title">
+      <h3>Create your Intuit Developer account</h3>
+      <div class="subtitle">Free. Uses your existing Intuit / QBO login.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="2"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Your Intuit developer account is where you create the app that gives you the API keys. It's free, and it uses your existing Intuit / QBO login.</p>
+
+      <ol class="action-list">
+        <li>Go to <code>developer.intuit.com</code></li>
+        <li>Click <strong>Sign In</strong> &mdash; use your existing Intuit / QBO credentials</li>
+        <li>Accept the developer terms if prompted</li>
+        <li>You land on the Developer Dashboard</li>
+      </ol>
+
+      <p>That's it for this step. We'll create the actual app in Step 4. First we set up the sandbox.</p>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 3 -->
+<article class="step" id="step-3" data-step="3">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>3</span></div>
+    <div class="step-title">
+      <h3>Set up your sandbox company</h3>
+      <div class="subtitle">A free private test environment. Don't skip the seeding.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="3"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Intuit's sandbox is a private, free test environment. It's where you'll connect Claude first so you can break things without consequences. The catch nobody mentions: <strong>the sandbox starts empty.</strong> You have to create a company before anything is there.</p>
+
+      <ol class="action-list">
+        <li>Inside <code>developer.intuit.com</code>, click the <strong>Hub icon</strong> in the top right</li>
+        <li>If you've never been here before, you'll see no companies</li>
+        <li>Click to add a company → choose which QBO product you want → add it</li>
+        <li>You can add up to 10 companies in your sandbox</li>
+      </ol>
+
+      <div class="sandbox-tip">
+        <div class="icon">💡</div>
+        <div>
+          <h5>ProTip</h5>
+          <p>Curious about Intuit Enterprise Suite? You can spin one up in your sandbox too. This is the cheapest way to get a feel for IES before you ever recommend it to a client.</p>
+        </div>
+      </div>
+
+      <p>Once your sandbox company exists, log into it directly at <code>qbo.intuit.com</code> (make sure you're in sandbox mode) and add a few customers, a few invoices, and a few bills. Without data, the read tools will return empty results — which looks like a failure but isn't. Five minutes of seeding the sandbox saves you an hour of wondering why nothing's happening.</p>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 4 -->
+<article class="step" id="step-4" data-step="4">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>4</span></div>
+    <div class="step-title">
+      <h3>Create your app in the developer portal</h3>
+      <div class="subtitle">Each app gets two pairs of keys — sandbox and production.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="4"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Now you create the app inside your developer account. Each app gets its own pair of keys — one for sandbox (Development) and one for live data (Production). You'll start with the sandbox keys.</p>
+      <ol class="action-list">
+        <li>Click <strong>+ Create an app</strong></li>
+        <li>Select <strong>QuickBooks Online and Payments</strong></li>
+        <li>Name it anything — "QBO MCP Server" works fine</li>
+        <li>Under <strong>Scopes</strong>, check <code>com.intuit.quickbooks.accounting</code></li>
+        <li>Click <strong>Create app</strong></li>
+      </ol>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 5 -->
+<article class="step" id="step-5" data-step="5">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>5</span></div>
+    <div class="step-title">
+      <h3>Add your redirect URI</h3>
+      <div class="subtitle">localhost means "this computer, right here."</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="5"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">The redirect URI is how QBO sends authorization back to your computer after you log in. It points at your own machine — not a website you have to own. Get it exactly right or QBO will reject the connection.</p>
+      <ol class="action-list">
+        <li>Open your new app → click <strong>Keys &amp; credentials</strong> on the left</li>
+        <li>Make sure you're on the <strong>Development</strong> tab (not Production)</li>
+        <li>Find <strong>Redirect URIs</strong> and add exactly: <code>http://localhost:3000/callback</code></li>
+        <li>Save</li>
+      </ol>
+      <div class="callout info">
+        <div class="callout-label">What this actually means</div>
+        <p><code>localhost</code> means "this computer, right here." Your MCP server will start a tiny temporary web server on port 3000 during the login handshake — just long enough to catch the token and shut back down. The redirect URI must match exactly or QBO refuses to play.</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 6 -->
+<article class="step" id="step-6" data-step="6">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>6</span></div>
+    <div class="step-title">
+      <h3>Build the MCP server with Claude Code</h3>
+      <div class="subtitle">You write zero code. Claude does.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="6"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <div class="callout warn">
+        <div class="callout-label">Important — none of this works yet</div>
+        <p>Step 6 builds the server. Step 7 wires the keys. Step 8 connects it to Claude Desktop. You won't be able to test anything until all three are done. <strong>Resist the urge to check.</strong></p>
+      </div>
+      <p class="lede">This must be done in <strong>Claude for Desktop</strong>. You can't do it in your browser. Open Claude Desktop and click the <strong>Code</strong> tab. This is Claude Code — the development environment. He's about to write the entire server for you.</p>
+      <ol class="action-list">
+        <li>Open Claude for Desktop</li>
+        <li>Click the <strong>Code</strong> tab</li>
+        <li>Start a new session</li>
+        <li>Click at the bottom to create a new folder. Browse to a location on your computer where this code will live and call it <code>qbo-mcp-server</code></li>
+        <li>Paste in <strong>Prompt 1</strong> below</li>
+      </ol>
+
+      <p>Below are <strong>two prompts</strong>. The first one builds the server and creates the read tools — about the same as what the native QBO connector does. The second adds the write tools so you can create invoices, customers, bills, and so on. You'll run Prompt 1 now and Prompt 2 later in Step 10. Read both — they're written in plain English and you can easily tell what's doing what.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">Prompt 1 — Read tools (run this now)</span>
+          <button class="copy-btn" data-copy="prompt-1">Copy</button>
+        </div>
+<pre id="prompt-1">I want to build a custom MCP server that connects Claude Desktop
+directly to my QuickBooks Online account. My Intuit Developer
+credentials will be stored in a .env file — Client ID, Client Secret,
+Redirect URI (http://localhost:3000/callback), and Environment
+(sandbox).
+
+Please build me a complete MCP server in Node.js that:
+
+1. Handles QBO OAuth 2.0 — browser login on first run, saves
+   tokens locally, auto-refreshes before expiry
+2. Exposes these tools to Claude Desktop:
+   - get_profit_and_loss (start_date, end_date)
+   - get_balance_sheet (start_date, end_date)
+   - get_cash_flow (start_date, end_date)
+   - get_aged_receivables
+   - get_aged_payables
+   - get_invoices (status, customer_id, start_date, end_date)
+   - get_overdue_invoices
+   - query (sql_query)
+   - get_company_info
+3. Creates a .env file with placeholders for my credentials
+4. Creates a claude_desktop_config.json snippet showing exactly
+   what to add to connect this server
+5. Includes a README with step-by-step setup instructions
+
+Use @modelcontextprotocol/sdk. Include full error handling and
+clear console messages.</pre>
+      </div>
+
+      <p>Watch Claude work. When he's done, you'll have a folder full of code — and a <code>.env</code> file with placeholder values waiting for your real keys. That's Step 7.</p>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 7 -->
+<article class="step" id="step-7" data-step="7">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>7</span></div>
+    <div class="step-title">
+      <h3>Get your keys and paste them into <code>.env</code></h3>
+      <div class="subtitle">Don't store them anywhere on the way.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="7"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Now go grab your keys and paste them straight into the <code>.env</code> file Claude Code just created. Don't store these anywhere else along the way.</p>
+
+      <div class="callout danger">
+        <div class="callout-label">The keys live where they live</div>
+        <p>Don't copy your Client ID and Secret into Notepad, a sticky note, an email draft, or a Google Doc. They live in the developer portal until they live in your <code>.env</code> file. Nowhere else. Keep the developer portal tab open or bookmark it in Notion so you can come back to it. <strong>That's the discipline.</strong></p>
+      </div>
+
+      <h4>Grab the keys</h4>
+      <ol class="action-list">
+        <li>Back in your Intuit Developer app, click <strong>Keys &amp; credentials</strong></li>
+        <li>Confirm you're on the <strong>Development</strong> tab</li>
+        <li>Toggle <strong>Show credentials</strong></li>
+        <li>Leave the tab open. You're going to copy → paste, not copy → save → paste</li>
+      </ol>
+
+      <h4>Open the <code>.env</code> file</h4>
+      <p>The <code>.env</code> file starts with a dot which hides it by default. Here's how to see it and open it on each platform.</p>
+
+      <div class="platform-tabs">
+        <div class="platform-tabs-header">
+          <input type="radio" name="platform-7" value="mac" id="p7-mac">
+          <label for="p7-mac">🍎 Mac</label>
+          <input type="radio" name="platform-7" value="win" id="p7-win" checked>
+          <label for="p7-win">🪟 Windows</label>
+        </div>
+        <div class="platform-content mac">
+          <ol>
+            <li>In Finder press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> to show hidden files</li>
+            <li>Open your <code>qbo-mcp-server</code> folder</li>
+            <li><kbd>Cmd</kbd>+Click <code>.env</code> → <strong>Open With</strong> → <strong>TextEdit</strong></li>
+          </ol>
+        </div>
+        <div class="platform-content win">
+          <ol>
+            <li>In File Explorer click <strong>View → Show → Hidden items</strong></li>
+            <li>Open your <code>qbo-mcp-server</code> folder</li>
+            <li>Right-click <code>.env</code> → <strong>Open With</strong> → <strong>Notepad</strong></li>
+          </ol>
+        </div>
+      </div>
+
+      <h4>Paste your values</h4>
+      <div class="env-preview">
+<span class="key">QBO_CLIENT_ID</span>=<span class="placeholder">paste_your_client_id_here</span>
+<span class="key">QBO_CLIENT_SECRET</span>=<span class="placeholder">paste_your_client_secret_here</span>
+<span class="key">QBO_REDIRECT_URI</span>=http://localhost:3000/callback
+<span class="key">QBO_ENVIRONMENT</span>=sandbox
+      </div>
+
+      <p>Replace the placeholder text after the equals signs with your actual values. Save. Close. Done.</p>
+
+      <div class="callout danger">
+        <div class="callout-label">Never share this file</div>
+        <p>Don't email it. Don't upload it to Google Drive. Don't paste it into any chat window. The keys inside give full access to your QBO account.</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 8 -->
+<article class="step" id="step-8" data-step="8">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>8</span></div>
+    <div class="step-title">
+      <h3>Connect the server to Claude Desktop</h3>
+      <div class="subtitle">Easiest way: ask Claude Code to do it.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="8"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">The server exists. The keys are in place. Now we tell Claude Desktop where to find it. Easiest way: ask Claude Code to do it for you.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">Paste into Claude Code</span>
+          <button class="copy-btn" data-copy="prompt-8">Copy</button>
+        </div>
+<pre id="prompt-8">Add my QBO MCP server to my Claude Desktop config file so Claude
+Desktop connects to it automatically. Find claude_desktop_config.json,
+add the QBO server entry, and tell me what you changed. Then tell me
+how to restart Claude Desktop to pick up the new config.</pre>
+      </div>
+
+      <ol class="action-list">
+        <li>After Claude Code confirms the change, quit Claude Desktop completely</li>
+        <li>Reopen Claude Desktop</li>
+        <li>Go to <strong>Settings → Connectors</strong>. Your QBO server should appear in the list</li>
+      </ol>
+
+      <div class="platform-tabs">
+        <div class="platform-tabs-header">
+          <input type="radio" name="platform-8" value="mac" id="p8-mac">
+          <label for="p8-mac">🍎 Mac quit</label>
+          <input type="radio" name="platform-8" value="win" id="p8-win" checked>
+          <label for="p8-win">🪟 Windows quit</label>
+        </div>
+        <div class="platform-content mac">
+          <ol><li>Right-click Claude in the Dock → <strong>Quit</strong></li></ol>
+        </div>
+        <div class="platform-content win">
+          <ol><li>Right-click Claude in the taskbar → <strong>Quit</strong></li></ol>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-label">First-time login</div>
+        <p>The first time Claude uses the QBO server, a browser window opens for QBO login. Log in with your Intuit credentials and click <strong>Allow</strong>. QBO sends you back to <code>localhost:3000/callback</code>, the server captures the token, the browser closes. From that point it's automatic for 100 days.</p>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-label">Already have the native QBO connector? Disconnect it.</div>
+        <p>If you also have the native QBO connector enabled, Claude will see whichever company you connected him to there. My vote: disconnect and remove the native connector altogether. This MCP connection gives you so much more than that one does. Keeping both will almost assuredly cause confusion.</p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 9 -->
+<article class="step" id="step-9" data-step="9">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>9</span></div>
+    <div class="step-title">
+      <h3>Confirm the connection &amp; test the read tools</h3>
+      <div class="subtitle">Try to break it. See what's possible.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="9"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Open the <strong>Chat</strong> tab in Claude Desktop. Before you do anything else, make sure he's actually connected to your sandbox company.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">Confirm connection</span>
+          <button class="copy-btn" data-copy="prompt-9a">Copy</button>
+        </div>
+<pre id="prompt-9a">Tell me about my QuickBooks company.</pre>
+      </div>
+
+      <p>If he comes back with the name of your sandbox company, you're connected. Now play with it. Try to break it. See what's possible.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">P&amp;L analysis</span>
+          <button class="copy-btn" data-copy="prompt-9b">Copy</button>
+        </div>
+<pre id="prompt-9b">Pull my P&amp;L for Q1 2026 and Q1 2025 and compare them.
+Where do I shine and where do I suck?</pre>
+      </div>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">A/R triage</span>
+          <button class="copy-btn" data-copy="prompt-9c">Copy</button>
+        </div>
+<pre id="prompt-9c">Pull all my overdue invoices. Group them by 30, 60, and 90+
+days past due. Who do I call first?</pre>
+      </div>
+
+      <p>Spend a few minutes here. The first time you watch Claude pull live numbers from your books and reason about them is the moment this becomes real for you. The point isn't to do anything productive yet — the point is to feel what's possible.</p>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 10 -->
+<article class="step" id="step-10" data-step="10">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>10</span></div>
+    <div class="step-title">
+      <h3>Add the write tools</h3>
+      <div class="subtitle">Run Prompt 2 to extend the server.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="10"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Now we extend the server. Same Claude Code session, same folder. This is the prompt that turns a read-only tool into a write-capable engineering job. Run this only after you've confirmed Step 9 worked.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">Prompt 2 — Write tools</span>
+          <button class="copy-btn" data-copy="prompt-10">Copy</button>
+        </div>
+<pre id="prompt-10">I have an existing QBO MCP server in my qbo-mcp-server folder.
+It currently has read tools only. Please add:
+
+1. create_customer
+   Parameters: display_name (required), email, phone,
+   billing_address (all optional)
+   POST /v3/company/{realmId}/customer
+
+2. update_customer
+   Parameters: customer_id (required), display_name, email,
+   phone, billing_address (all optional)
+   Fetch current customer for SyncToken first, then update
+   POST /v3/company/{realmId}/customer
+
+3. create_item (product or service)
+   Parameters: name (required), type (required — Service,
+   Inventory, or NonInventory), unit_price, description,
+   income_account_name (all optional)
+   POST /v3/company/{realmId}/item
+
+4. create_invoice
+   Parameters: customer_ref (required), line_items (required
+   — array of description + amount), due_date, send_email
+   POST /v3/company/{realmId}/invoice
+
+5. create_bill
+   Parameters: vendor_name, amount, category,
+   transaction_date (all required), memo (optional)
+   POST /v3/company/{realmId}/bill
+
+6. create_account
+   Parameters: name, account_type (required — e.g. Income,
+   Expense, Bank, Credit Card), account_sub_type, description
+   POST /v3/company/{realmId}/account
+
+7. send_invoice_email
+   Parameters: invoice_id (required), email (optional)
+   POST /v3/company/{realmId}/invoice/{id}/send
+
+8. import_transactions_from_csv
+   Parameters: file_path (required), transaction_type
+   (required — Expense, Bill, or JournalEntry),
+   bank_account_name (required), dry_run (optional boolean)
+   Reads CSV, categorizes using Chart of Accounts, imports
+   via POST /v3/company/{realmId}/batch
+
+Keep existing OAuth and read tools unchanged. Add clear error
+handling on all write operations. Tell me how to restart the
+server when done.</pre>
+      </div>
+
+      <p>After Claude Code finishes, restart your MCP server and test the writes.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">The interactive invoice demo</span>
+          <button class="copy-btn" data-copy="prompt-10b">Copy</button>
+        </div>
+<pre id="prompt-10b">Create a new customer in QuickBooks and send them an invoice
+for $5,000.</pre>
+      </div>
+
+      <p>Watch Claude ask for the missing details — client name, email, what the $5,000 is for. <strong>That interactive back-and-forth is the demo moment.</strong> He's behaving like a junior accountant who's been trained to ask for what he needs before he commits anything.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">The Nobu receipt</span>
+          <button class="copy-btn" data-copy="prompt-10c">Copy</button>
+        </div>
+<pre id="prompt-10c">I just had lunch with a client at Nobu. $187 including tip.
+Log it as Meals &amp; Entertainment dated today.</pre>
+      </div>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">The CSV import (dry run first)</span>
+          <button class="copy-btn" data-copy="prompt-10d">Copy</button>
+        </div>
+<pre id="prompt-10d">I have a CSV export of my bank statement at
+~/Desktop/bank-statement.csv
+Import it as expenses into my Checking account.
+Look up my chart of accounts and suggest categories.
+Run as dry_run first so I can review before posting.</pre>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 11 -->
+<article class="step" id="step-11" data-step="11">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>11</span></div>
+    <div class="step-title">
+      <h3>Submit your app for production approval</h3>
+      <div class="subtitle">~30 minutes. Claude helps with the questions.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="11"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Sandbox confirmed everything works. Now we go live. But first, Intuit requires an app review before they'll let you point at real data.</p>
+
+      <div class="callout info">
+        <div class="callout-label">What this actually involves</div>
+        <p>About 30 minutes of work. Intuit's application has questions you may not be sure how to answer — that's exactly what Claude is there for. Even when I thought I knew the answer, I took a screenshot and asked Claude to confirm. <strong>That's how you use Claude. Not as a search engine. As a software engineer who can navigate you through all of this so you don't need to know any of the technical stuff.</strong> Let him do that.</p>
+      </div>
+
+      <p>My approval came back almost immediately, likely because I'm asking for a private app that's only for me to use. Yours probably will too, but build in a buffer.</p>
+
+      <h4>App review description</h4>
+      <p>Use this in the application. Fill in your name.</p>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">Copy and paste, fill in your name</span>
+          <button class="copy-btn" data-copy="prompt-11">Copy</button>
+        </div>
+<pre id="prompt-11">This is a private internal tool for use by [YOUR NAME], a
+licensed accounting professional. The app connects directly
+to QuickBooks Online via the API to pull financial reports
+and perform accounting operations. All data is processed
+locally on the developer's own machine. No data is stored
+on external servers or shared with third parties.
+
+This app is not intended for public distribution, resale,
+or listing on the Intuit App Store. It will be used
+exclusively by the developer to access their own QBO company
+and client companies for which they serve as the authorized
+accountant.
+
+Scope: com.intuit.quickbooks.accounting
+Purpose: Private financial reporting and operations tool.</pre>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- STEP 12 -->
+<article class="step" id="step-12" data-step="12">
+  <div class="step-head">
+    <div class="step-num"><small>STEP</small><span>12</span></div>
+    <div class="step-title">
+      <h3>Switch to production / connect to real books</h3>
+      <div class="subtitle">Keep both sandbox and production keys. Demo is gold.</div>
+    </div>
+    <div class="step-controls">
+      <label class="step-check"><input type="checkbox" data-check="12"><span class="checkbox"></span><span>Done</span></label>
+      <div class="step-toggle">▼</div>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="step-content">
+      <p class="lede">Once Intuit approves your app, you can grab production keys and point Claude at live data. Two things to know first.</p>
+
+      <ol class="action-list">
+        <li><strong>Don't connect to a client's books without their permission.</strong></li>
+        <li>Keep both sets of keys in your <code>.env</code> so you can demo in sandbox and work in production. I highly recommend this — being able to demo your capabilities to a prospective client is huge. Very few accountants can do this right now.</li>
+      </ol>
+
+      <h4>Pull your production keys</h4>
+      <ol class="action-list">
+        <li>Once approved, go to your app → <strong>Keys &amp; credentials</strong> → <strong>Production</strong> tab</li>
+        <li>Copy your production Client ID and Client Secret</li>
+        <li>Ask Claude Code to update your <code>.env</code> with both sandbox and production keys, and tell him you want to be able to switch between them. Give him the keys when he asks. He'll handle the file change.</li>
+        <li>Restart Claude Desktop</li>
+      </ol>
+
+      <div class="callout info">
+        <div class="callout-label">Accessing client books — two paths</div>
+        <p><strong>Option A.</strong> If you're already the accountant user in the client's QBO: log in with your own Intuit credentials when the OAuth screen appears. Intuit shows you a company picker with every company you have access to. Pick the client.</p>
+        <p><strong>Option B.</strong> If you're not their accountant user: ask Claude Code to generate an authorization link. Send it to the client. They click it, log in with their own credentials, and authorize. Tokens come back to your server. <strong>They never share their password.</strong></p>
+      </div>
+    </div>
+  </div>
+</article>
+
+</main>
+
+<!-- BIG QUOTE -->
+<section class="big-quote">
+  <blockquote>
+    Stop waiting for the tools to catch up.<br>
+    <span class="accent">You just became the tool.</span>
+  </blockquote>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="inner">
+    <img src="clean-logo.jpg" alt="Clean by Nerd Enterprises">
+    <h3>Want to learn this live?</h3>
+    <p>I teach this inside <strong>97 &amp; Up</strong> — two live calls a week, full member community, Q&amp;A spaces. The interactive guide is free. The live work is where things get real.</p>
+    <div class="footer-cta">
+      <a href="https://community.nerdenterprises.com" class="btn btn-primary" target="_blank" rel="noopener">Join 97 &amp; Up</a>
+      <a href="https://community.nerdenterprises.com" class="btn btn-ghost" target="_blank" rel="noopener">Join Talk Nerdy To Me (free)</a>
+    </div>
+    <div class="copyright">
+      © 2026 Nerd Enterprises, Inc. · Built in <strong>97 &amp; Up — The Claude Supremacy Series</strong>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── State (persists across visits via localStorage) ──
+  const STORAGE_KEY = 'qbo-mcp-progress-v1';
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch (_) { return {}; }
+  }
+  function saveProgress(p) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch (_) {}
+  }
+  let progress = loadProgress();
+
+  // ── Build step nav grid ──
+  const navGrid = document.getElementById('step-nav-grid');
+  for (let i = 1; i <= 12; i++) {
+    const a = document.createElement('a');
+    a.href = '#step-' + i;
+    a.className = 'step-dot' + (progress[i] ? ' done' : '');
+    a.dataset.dot = i;
+    a.textContent = i;
+    navGrid.appendChild(a);
+  }
+
+  // ── Restore checkbox state ──
+  document.querySelectorAll('input[data-check]').forEach(cb => {
+    const n = cb.dataset.check;
+    if (progress[n]) cb.checked = true;
+    const step = cb.closest('.step');
+    if (progress[n]) step.classList.add('is-done');
+  });
+  updateProgress();
+
+  // ── Step toggle (click anywhere on head except checkbox) ──
+  document.querySelectorAll('.step-head').forEach(head => {
+    head.addEventListener('click', e => {
+      if (e.target.closest('.step-check')) return;
+      head.parentElement.classList.toggle('is-open');
+    });
+  });
+
+  // Open step 1 by default
+  document.getElementById('step-1').classList.add('is-open');
+
+  // ── Checkbox state ──
+  document.querySelectorAll('input[data-check]').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const n = cb.dataset.check;
+      const step = cb.closest('.step');
+      if (cb.checked) {
+        progress[n] = true;
+        step.classList.add('is-done');
+      } else {
+        delete progress[n];
+        step.classList.remove('is-done');
+      }
+      saveProgress(progress);
+      // Update nav dot
+      const dot = document.querySelector(`[data-dot="${n}"]`);
+      if (dot) dot.classList.toggle('done', cb.checked);
+      updateProgress();
+    });
+  });
+
+  function updateProgress() {
+    const done = Object.keys(progress).length;
+    document.getElementById('progress-text').textContent = done + ' of 12';
+    document.getElementById('progress-fill').style.width = (done / 12 * 100) + '%';
+  }
+
+  // ── Copy buttons ──
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const targetId = btn.dataset.copy;
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      try {
+        await navigator.clipboard.writeText(target.textContent);
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      } catch (e) {
+        // Fallback
+        const range = document.createRange();
+        range.selectNode(target);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+      }
+    });
+  });
+
+  // ── Open the step you're navigating to ──
+  document.querySelectorAll('a[href^="#step-"]').forEach(a => {
+    a.addEventListener('click', () => {
+      const id = a.getAttribute('href').slice(1);
+      const step = document.getElementById(id);
+      if (step) step.classList.add('is-open');
+    });
+  });
+</script>
+
+</body>
+</html>
