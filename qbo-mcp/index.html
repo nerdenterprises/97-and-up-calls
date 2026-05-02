@@ -797,6 +797,30 @@
   }
   .sandbox-tip p { margin: 0; font-size: 14.5px; color: var(--text-muted); line-height: 1.5; }
 
+  /* Screenshot figure */
+  .screenshot {
+    margin: 22px 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    box-shadow: var(--shadow-md);
+  }
+  .screenshot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .screenshot figcaption {
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+    background: white;
+    border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .screenshot figcaption strong { color: var(--text); }
+
   /* Print: hide nav and toggles, expand all */
   @media print {
     header.site, .step-nav, .progress-pill, .step-toggle, .hero-cta { display: none; }
@@ -881,6 +905,11 @@
   </div>
   <div class="step-body">
     <div class="step-content">
+      <div class="callout info">
+        <div class="callout-label">Step One — the spirit of it</div>
+        <p><em>We admitted we were powerless over our data — that our practices had become unmanageable.</em> The native QBO connector wasn't going to fix that for us. Building our own tool is how we take it back. Twelve steps. Let's begin.</p>
+      </div>
+
       <p class="lede">Node.js is the runtime your MCP server needs in order to run. Install it once like any other app. You never need to touch it again after this step.</p>
 
       <ol class="action-list">
@@ -904,22 +933,28 @@
         <div class="platform-content mac">
           <ol>
             <li>Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type <strong>Terminal</strong>, press <kbd>Enter</kbd></li>
-            <li>In the black window type: <code>node --version</code></li>
+            <li>At the prompt type: <code>node --version</code></li>
             <li>Press <kbd>Enter</kbd></li>
           </ol>
         </div>
         <div class="platform-content win">
           <ol>
-            <li>Press the <kbd>Windows</kbd> key, type <strong>cmd</strong>, press <kbd>Enter</kbd></li>
-            <li>In the black window type: <code>node --version</code></li>
+            <li>Press the <kbd>Windows</kbd> key, type <strong>cmd</strong> (or <strong>PowerShell</strong>), press <kbd>Enter</kbd></li>
+            <li>At the prompt type: <code>node --version</code></li>
             <li>Press <kbd>Enter</kbd></li>
           </ol>
+          <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted);">Either Command Prompt or PowerShell will work. If one prompts for permissions or behaves oddly, switch to the other.</p>
         </div>
       </div>
 
       <div class="callout success">
         <div class="callout-label">Success looks like this</div>
-        <p>You see a version number — something like <code>v22.14.0</code>. Any number means Node.js is working. Close the window. If it says "command not found" or "not recognized," restart your computer and try again. If it still fails, ask Claude Code: <em>"I installed Node.js but node --version says command not found."</em> He'll fix it.</p>
+        <p>You see a version number — something like <code>v22.14.0</code>. Any number means Node.js is working. Close the window.</p>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-label">When something doesn't look right — the meta-lesson</div>
+        <p>If you hit "command not found," a permission prompt, or anything you don't recognize: <strong>take a screenshot, paste it into Claude, and ask him what to do.</strong> This is the whole pattern. You're not expected to know any of this. You're expected to ask Claude. He's your engineer. Get used to this loop now — you'll use it again at Step 11 and beyond.</p>
       </div>
     </div>
   </div>
@@ -1147,7 +1182,40 @@ clear console messages.</pre>
         <li>Leave the tab open. You're going to copy → paste, not copy → save → paste</li>
       </ol>
 
-      <h4>Open the <code>.env</code> file</h4>
+      <h4>First — find your <code>qbo-mcp-server</code> folder</h4>
+      <p>You set this folder up when you started the build in Step 6. If you came back a day later and don't remember where you put it, here's the fastest way to find it again — Claude Code remembers.</p>
+
+      <figure class="screenshot">
+        <img src="show-in-explorer.jpg" alt="Right-click menu on a Claude Code recents item showing Show in Explorer, Copy path, Copy branch name">
+        <figcaption><strong>Inside Claude Desktop → Code tab → Recents.</strong> Right-click your QBO MCP project to see the options below.</figcaption>
+      </figure>
+
+      <div class="platform-tabs">
+        <div class="platform-tabs-header">
+          <input type="radio" name="platform-7-find" value="mac" id="p7find-mac">
+          <label for="p7find-mac">🍎 Mac</label>
+          <input type="radio" name="platform-7-find" value="win" id="p7find-win" checked>
+          <label for="p7find-win">🪟 Windows</label>
+        </div>
+        <div class="platform-content mac">
+          <ol>
+            <li>Open Claude for Desktop → click the <strong>Code</strong> tab</li>
+            <li>Find your QBO MCP project under <strong>Recents</strong></li>
+            <li>Right-click (or Control-click) the project</li>
+            <li>Choose <strong>Show in Finder</strong> — the folder opens directly</li>
+          </ol>
+        </div>
+        <div class="platform-content win">
+          <ol>
+            <li>Open Claude for Desktop → click the <strong>Code</strong> tab</li>
+            <li>Find your QBO MCP project under <strong>Recents</strong></li>
+            <li>Right-click the project</li>
+            <li>Choose <strong>Show in Explorer</strong> — the folder opens directly</li>
+          </ol>
+        </div>
+      </div>
+
+      <h4>Now open the <code>.env</code> file</h4>
       <p>The <code>.env</code> file starts with a dot which hides it by default. Here's how to see it and open it on each platform.</p>
 
       <div class="platform-tabs">
@@ -1160,14 +1228,12 @@ clear console messages.</pre>
         <div class="platform-content mac">
           <ol>
             <li>In Finder press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> to show hidden files</li>
-            <li>Open your <code>qbo-mcp-server</code> folder</li>
             <li><kbd>Cmd</kbd>+Click <code>.env</code> → <strong>Open With</strong> → <strong>TextEdit</strong></li>
           </ol>
         </div>
         <div class="platform-content win">
           <ol>
             <li>In File Explorer click <strong>View → Show → Hidden items</strong></li>
-            <li>Open your <code>qbo-mcp-server</code> folder</li>
             <li>Right-click <code>.env</code> → <strong>Open With</strong> → <strong>Notepad</strong></li>
           </ol>
         </div>
@@ -1428,38 +1494,23 @@ Run as dry_run first so I can review before posting.</pre>
   </div>
   <div class="step-body">
     <div class="step-content">
-      <p class="lede">Sandbox confirmed everything works. Now we go live. But first, Intuit requires an app review before they'll let you point at real data.</p>
+      <p class="lede">Sandbox confirmed everything works. Now we go live. But first, Intuit requires an app review before they'll let you point at real data. About 30 minutes of work — and the whole step is one lesson.</p>
 
-      <div class="callout info">
-        <div class="callout-label">What this actually involves</div>
-        <p>About 30 minutes of work. Intuit's application has questions you may not be sure how to answer — that's exactly what Claude is there for. Even when I thought I knew the answer, I took a screenshot and asked Claude to confirm. <strong>That's how you use Claude. Not as a search engine. As a software engineer who can navigate you through all of this so you don't need to know any of the technical stuff.</strong> Let him do that.</p>
+      <div class="callout success">
+        <div class="callout-label">This is the whole step</div>
+        <p>Intuit's application has questions you may not be sure how to answer. <strong>Take a screenshot of every question you don't know. Paste it into Claude. Ask him what to put.</strong> Then put what he tells you. That's it. That's the entire workflow for Step 11.</p>
       </div>
 
-      <p>My approval came back almost immediately, likely because I'm asking for a private app that's only for me to use. Yours probably will too, but build in a buffer.</p>
+      <p>Even when I thought I knew the answer, I took a screenshot and asked Claude to confirm. Sometimes he caught something I missed. Sometimes he just confirmed I was right. Either way, the cost is zero and the upside is real.</p>
 
-      <h4>App review description</h4>
-      <p>Use this in the application. Fill in your name.</p>
+      <h4>Why this matters more than the questions themselves</h4>
+      <p>This is the pattern. Not just for the Intuit application — for every piece of unfamiliar technical territory you ever step into from this point forward. <strong>You don't use Claude as a search engine. You use him as a software engineer who's been hired to navigate this with you.</strong> Search engines give you ten links to read. Engineers tell you what to do.</p>
 
-      <div class="prompt">
-        <div class="prompt-header">
-          <span class="label">Copy and paste, fill in your name</span>
-          <button class="copy-btn" data-copy="prompt-11">Copy</button>
-        </div>
-<pre id="prompt-11">This is a private internal tool for use by [YOUR NAME], a
-licensed accounting professional. The app connects directly
-to QuickBooks Online via the API to pull financial reports
-and perform accounting operations. All data is processed
-locally on the developer's own machine. No data is stored
-on external servers or shared with third parties.
+      <p>If you internalize this one habit — screenshot, paste, ask, answer — you've already gotten more out of this guide than the working MCP server you're about to have.</p>
 
-This app is not intended for public distribution, resale,
-or listing on the Intuit App Store. It will be used
-exclusively by the developer to access their own QBO company
-and client companies for which they serve as the authorized
-accountant.
-
-Scope: com.intuit.quickbooks.accounting
-Purpose: Private financial reporting and operations tool.</pre>
+      <div class="callout info">
+        <div class="callout-label">What to expect</div>
+        <p>My approval came back almost immediately, likely because I was asking for a private app that's only for me to use. Yours probably will too. Build in a buffer just in case.</p>
       </div>
     </div>
   </div>
@@ -1491,14 +1542,51 @@ Purpose: Private financial reporting and operations tool.</pre>
       <ol class="action-list">
         <li>Once approved, go to your app → <strong>Keys &amp; credentials</strong> → <strong>Production</strong> tab</li>
         <li>Copy your production Client ID and Client Secret</li>
-        <li>Ask Claude Code to update your <code>.env</code> with both sandbox and production keys, and tell him you want to be able to switch between them. Give him the keys when he asks. He'll handle the file change.</li>
+        <li>Hand the keys to Claude Code with the prompt below — he'll handle the file change</li>
         <li>Restart Claude Desktop</li>
       </ol>
+
+      <div class="prompt">
+        <div class="prompt-header">
+          <span class="label">Tell Claude Code to keep both</span>
+          <button class="copy-btn" data-copy="prompt-12">Copy</button>
+        </div>
+<pre id="prompt-12">Update my .env so I can keep BOTH sandbox and production keys
+and switch between them easily.
+
+I want to be able to demo this in sandbox for marketing videos
+and prospect calls without disconnecting from a real client's
+production books. Make it so I can flip between environments
+with a single value change (like QBO_ENVIRONMENT=sandbox vs
+QBO_ENVIRONMENT=production), and the right Client ID / Secret
+gets used automatically.
+
+Here are my keys — paste them in the right places and confirm
+when it's done:
+
+Sandbox Client ID: [paste here]
+Sandbox Client Secret: [paste here]
+Production Client ID: [paste here]
+Production Client Secret: [paste here]
+
+Then tell me how to restart the server.</pre>
+      </div>
+
+      <div class="callout success">
+        <div class="callout-label">Why this matters for your practice</div>
+        <p>Sandbox isn't just for testing — it's a marketing weapon. You can spin up to <strong>10 sandbox companies</strong>, and that includes <strong>Intuit Enterprise Suite</strong> (which most accountants have never even seen). Build out a fake DTC brand, a fake services firm, even an IES company — then record demo videos showing Claude doing things in those books that no other accountant on LinkedIn is doing. <strong>This is how you attract new clients without ever paying for IES yourself.</strong></p>
+      </div>
 
       <div class="callout info">
         <div class="callout-label">Accessing client books — two paths</div>
         <p><strong>Option A.</strong> If you're already the accountant user in the client's QBO: log in with your own Intuit credentials when the OAuth screen appears. Intuit shows you a company picker with every company you have access to. Pick the client.</p>
         <p><strong>Option B.</strong> If you're not their accountant user: ask Claude Code to generate an authorization link. Send it to the client. They click it, log in with their own credentials, and authorize. Tokens come back to your server. <strong>They never share their password.</strong></p>
+      </div>
+
+      <div class="callout success">
+        <div class="callout-label">Step Twelve — the spirit of it</div>
+        <p><em>Having had a technical awakening as the result of these steps, we tried to carry this message to accountants everywhere — and to practice these principles in all our workflows.</em></p>
+        <p>You did it. Now go show somebody.</p>
       </div>
     </div>
   </div>
