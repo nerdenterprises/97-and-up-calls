@@ -344,7 +344,71 @@
     padding: 4px 12px; border-radius: 4px; margin: 0 4px;
   }
 
-  /* USE CASES */
+  /* PATH PICKER (Stage 2 Ship) */
+  .path-block {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px dashed rgba(26, 26, 26, 0.15);
+  }
+  .path-block:first-of-type {
+    margin-top: 24px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .path-label {
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.25em;
+    color: white;
+    background: var(--nerd-blue);
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+  }
+  .path-block.netlify .path-label {
+    background: #14a098;
+  }
+  .path-title {
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--deep-blue);
+    margin-bottom: 8px;
+  }
+  .path-block.netlify .path-title { color: #14a098; }
+  .path-subtitle {
+    font-size: 16px;
+    color: var(--charcoal);
+    opacity: 0.75;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+  .path-block.netlify .step-num { color: #14a098; }
+  .path-block.netlify .step-body h4 { color: #0e7c75; }
+  .path-block.netlify .prompt { border-left-color: #14a098; }
+  .path-block.netlify .prompt .prompt-label { color: #14a098; }
+
+  /* PATH PICKER LEAD */
+  .path-picker-lead {
+    background: var(--cream);
+    border-left: 6px solid var(--deep-green);
+    padding: 24px 28px;
+    border-radius: 4px;
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+  .path-picker-lead h3 {
+    font-family: Arial, sans-serif;
+    color: var(--deep-green);
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+  .path-picker-lead p { font-size: 16px; line-height: 1.7; }
+  .path-picker-lead p + p { margin-top: 10px; }
+  .path-picker-lead strong { color: var(--charcoal); }
   .use-cases { background: white; padding: 64px 0; }
   .use-grid {
     display: grid;
@@ -629,67 +693,134 @@
     <div class="container">
       <div class="stage-label">STAGE 2 &middot; PART 2 &middot; APRIL 28</div>
       <h2 class="stage-title">Ship It Live</h2>
-      <div class="stage-meta">Tuesday's call. From your laptop to the public internet &mdash; all in the browser, no terminal required.</div>
-      <p class="stage-intro">You built the app in Claude Code. Now we take the file and upload it to GitHub by hand &mdash; clean, browser-based, nothing to break. Every member finishes the call with a live URL.</p>
+      <div class="stage-meta">From your laptop to the public internet &mdash; on your own subdomain, with HTTPS.</div>
+      <p class="stage-intro">You built the app in Claude Code. Now we put it on the internet at your own URL. Two equally valid paths to choose from &mdash; pick the one that fits your setup.</p>
 
-      <div class="callout green">
-        <h3>WHY GITHUB PAGES OVER NETLIFY</h3>
-        <p>You're already on GitHub. Your code lives there. Your version history lives there. Hosting from GitHub Pages just eliminates one vendor, one account, and one mental model. <strong>Netlify has a free tier too</strong> &mdash; it's a fine product &mdash; but it runs on a credit system that can suspend your site if you iterate a lot in a month. GitHub Pages has no credit system, no surprise limits, and no risk of your professional subdomain going dark mid-month. One less thing to manage.</p>
+      <div class="path-picker-lead">
+        <h3>WHICH PATH IS RIGHT FOR YOU?</h3>
+        <p><strong>Path A &mdash; GitHub Pages.</strong> Best if you're using Claude Code with GitHub already connected, or if you want one consolidated workflow. Free forever, no usage limits, your code and your hosting in the same place.</p>
+        <p><strong>Path B &mdash; Netlify.</strong> Best if you can't or don't want to connect GitHub to Claude Code, or if you want the simplest possible drop-and-deploy experience. Free tier with custom domains and HTTPS, friendlier UI, slight credit cap on the free plan that most members will never hit.</p>
+        <p><strong>Either path gets you to the same place</strong> &mdash; a tool live at <em>97.yourpractice.com/your-tool/</em> with HTTPS, served free, ready to share. The skills (folder, CNAME, HTTPS) transfer perfectly between them.</p>
       </div>
 
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <h4>Create a new repository on GitHub</h4>
-            <p>Log into GitHub &rarr; click the <strong>+</strong> icon top right &rarr; <strong>New repository</strong>. Name it something like <em>97-and-up-calls</em> &mdash; one umbrella repo holds every visualization you'll ever ship.</p>
-            <p><strong>Critical:</strong> set visibility to <strong>Public</strong>. GitHub Pages on free accounts only works with public repos, and the rendered URL is public anyway &mdash; private doesn't buy you anything. Skip README, .gitignore, and license. Click Create.</p>
+      <!-- PATH A — GITHUB -->
+      <div class="path-block">
+        <span class="path-label">PATH A</span>
+        <div class="path-title">GitHub Pages</div>
+        <div class="path-subtitle">Code and hosting in one place. Free forever, no credit limits.</div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Create a new repository on GitHub</h4>
+              <p>Log into GitHub &rarr; click the <strong>+</strong> icon top right &rarr; <strong>New repository</strong>. Name it something like <em>97-and-up-calls</em> &mdash; one umbrella repo holds every visualization you'll ever ship.</p>
+              <p><strong>Critical:</strong> set visibility to <strong>Public</strong>. GitHub Pages on free accounts only works with public repos, and the rendered URL is public anyway &mdash; private doesn't buy you anything. Skip README, .gitignore, and license. Click Create.</p>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <h4>Prep the folder on your computer</h4>
-            <p>Find the folder Claude Code built your tool in (the one you created in Part 1 &mdash; probably on your Desktop). Two small checks:</p>
-            <p><strong>Folder name:</strong> if it isn't already your URL slug, rename it. <em>loan-calculator</em> becomes <em>yoursite.com/loan-calculator/</em>. Use lowercase-with-hyphens, no spaces, no capitals.</p>
-            <p><strong>Main HTML file:</strong> open the folder and confirm there's a file called <code>index.html</code>. If the HTML file has a different name, rename it. GitHub Pages auto-serves index.html at folder URLs, giving you the clean URL instead of an ugly filename on the end.</p>
-            <p><strong>Everything else Claude Code put in there:</strong> leave it alone. It all goes up together. More on that in the next step.</p>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Prep the folder on your computer</h4>
+              <p>Find the folder Claude Code built your tool in (the one you created in Part 1 &mdash; probably on your Desktop). Two small checks:</p>
+              <p><strong>Folder name:</strong> if it isn't already your URL slug, rename it. <em>loan-calculator</em> becomes <em>yoursite.com/loan-calculator/</em>. Use lowercase-with-hyphens, no spaces, no capitals.</p>
+              <p><strong>Main HTML file:</strong> open the folder and confirm there's a file called <code>index.html</code>. If the HTML file has a different name, rename it. GitHub Pages auto-serves index.html at folder URLs, giving you the clean URL instead of an ugly filename on the end.</p>
+              <p><strong>Everything else Claude Code put in there:</strong> leave it alone. It all goes up together.</p>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <h4>Drag-and-drop the folder into GitHub</h4>
-            <p>On your empty repo page, click the <strong>"uploading an existing file"</strong> link in the blue Quick Setup box (or Add file &rarr; Upload files once the repo has content). <strong>Drag the whole folder</strong> from your computer into the drop zone &mdash; not just the HTML file inside it. GitHub preserves the folder structure automatically. Commit changes.</p>
-            <p><strong>Why the folder, not just the file:</strong> for simple prompts like the loan calculator, Claude Code produces one index.html file and nothing else. But for more complex tools, it might produce separate CSS, JavaScript, or image files. The folder is the unit that works together &mdash; always drag the whole folder and you never have to think about which files matter.</p>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Drag-and-drop the folder into GitHub</h4>
+              <p>On your empty repo page, click the <strong>"uploading an existing file"</strong> link in the blue Quick Setup box (or Add file &rarr; Upload files once the repo has content). <strong>Drag the whole folder</strong> from your computer into the drop zone &mdash; not just the HTML file inside it. GitHub preserves the folder structure automatically. Commit changes.</p>
+              <p><strong>Why the folder, not just the file:</strong> for simple prompts like the loan calculator, Claude Code produces one index.html file and nothing else. But for more complex tools, it might produce separate CSS, JavaScript, or image files. The folder is the unit that works together &mdash; always drag the whole folder and you never have to think about which files matter.</p>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <h4>Turn on GitHub Pages + set your custom subdomain</h4>
-            <p>Repo &rarr; Settings &rarr; Pages. Source: Deploy from a branch. Branch: main / root. Save.</p>
-            <p>Scroll to Custom domain and enter the subdomain you want &mdash; e.g., <em>97.nerdenterprises.com</em>. Click Save. It'll show a red X (DNS not pointed yet) &mdash; expected. Next step fixes it.</p>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Turn on GitHub Pages + set your custom subdomain</h4>
+              <p>Repo &rarr; Settings &rarr; Pages. Source: Deploy from a branch. Branch: main / root. Save.</p>
+              <p>Scroll to Custom domain and enter the subdomain you want &mdash; e.g., <em>97.nerdenterprises.com</em>. Click Save. It'll show a red X (DNS not pointed yet) &mdash; expected. Next step fixes it.</p>
+            </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-body">
-            <h4>Add a CNAME at your registrar, wait, enforce HTTPS</h4>
-            <p>Log into GoDaddy / Namecheap / Cloudflare. DNS management. Add a CNAME record:</p>
-            <div class="prompt"><span class="prompt-label">CNAME RECORD</span>Type:  CNAME
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h4>Add a CNAME at your registrar, wait, enforce HTTPS</h4>
+              <p>Log into GoDaddy / Namecheap / Cloudflare. DNS management. Add a CNAME record:</p>
+              <div class="prompt"><span class="prompt-label">CNAME RECORD</span>Type:  CNAME
 Name:  97            (just the subdomain prefix)
 Value: username.github.io   (no https://, no trailing slash)
 TTL:   default</div>
-            <p>Propagation is usually 5&ndash;15 minutes. Back in GitHub Pages, click Check again until the green checkmark appears. Then check Enforce HTTPS. Let's Encrypt provisions a free SSL cert automatically. Visit your URL. Live.</p>
+              <p>Propagation is usually 5&ndash;15 minutes. Back in GitHub Pages, click Check again until the green checkmark appears. Then check Enforce HTTPS. Let's Encrypt provisions a free SSL cert automatically. Visit your URL. Live.</p>
+            </div>
           </div>
+        </div>
+
+        <div class="callout">
+          <h3>TO UPDATE LATER (PATH A)</h3>
+          <p>When you want to update a tool, navigate into its folder on GitHub (e.g., click into the <em>loan-calculator</em> folder). Click Add file &rarr; Upload files, and drag whatever files changed. GitHub replaces files that match names by filename &mdash; no need to delete first. For single-file tools, that's just a new <code>index.html</code>. For multi-file tools, drag all the changed files at once (or drag the whole folder again &mdash; any files that match names get replaced). New version live within a minute.</p>
+          <p><strong>Part 3 shows the power-user version</strong> where Claude Code pushes changes directly and the site updates in 30 seconds without any drag-and-drop at all.</p>
         </div>
       </div>
 
-      <div class="callout">
-        <h3>TO UPDATE LATER</h3>
-        <p>When you want to update a tool, navigate into its folder on GitHub (e.g., click into the <em>loan-calculator</em> folder). Click Add file &rarr; Upload files, and drag whatever files changed. GitHub replaces files that match names by filename &mdash; no need to delete first. For single-file tools, that's just a new <code>index.html</code>. For multi-file tools, drag all the changed files at once (or drag the whole folder again &mdash; any files that match names get replaced). New version live within a minute.</p>
-        <p><strong>Part 3 shows the power-user version</strong> where Claude Code pushes changes directly and the site updates in 30 seconds without any drag-and-drop at all.</p>
+      <!-- PATH B — NETLIFY -->
+      <div class="path-block netlify">
+        <span class="path-label">PATH B</span>
+        <div class="path-title">Netlify</div>
+        <div class="path-subtitle">No GitHub required. Drop, connect, ship.</div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Add Netlify as a connector in Claude</h4>
+              <p>Open Claude Desktop &rarr; Settings &rarr; Connectors &rarr; find Netlify in the list (or search if needed). Click Connect, authorize Claude through your Netlify account in the browser, return to Claude. This is the same kind of OAuth handshake we did for QBO &mdash; one-time setup, then Claude can talk to your Netlify account anytime.</p>
+              <p>Don't have a Netlify account yet? Go to <em>app.netlify.com/signup</em> first and sign up with GitHub, Google, or email. Free, takes a minute.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Prep the folder on your computer</h4>
+              <p>Same step as Path A. Find your Claude Code project folder. Make sure the main HTML file is named <code>index.html</code> &mdash; Netlify, like GitHub Pages, auto-serves index.html as the entry point. Folder name doesn't matter for Netlify (you'll set the URL through Netlify's UI), but use a sensible lowercase-with-hyphens name anyway for your own sanity.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Drop the folder at Netlify Drop</h4>
+              <p>Go to <em>app.netlify.com/drop</em>. You'll see a single big drop zone. Drag your project folder &mdash; the whole folder, not just the HTML inside &mdash; into the zone. Netlify uploads it, builds the site, and gives you a live URL like <em>dazzling-pasteur-a1b2c3.netlify.app</em> in about 10 seconds. Click it to confirm your tool loads.</p>
+              <p><strong>Rename the site:</strong> in the dashboard for the new site, find <strong>Site configuration</strong> &rarr; <strong>Change site name</strong>. Pick something memorable like <em>nerdenterprises-tools</em>. URL becomes <em>nerdenterprises-tools.netlify.app</em>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Add your custom subdomain in Netlify</h4>
+              <p>In the site dashboard &rarr; <strong>Domain management</strong> &rarr; <strong>Add a domain you already own</strong>. Enter <em>97.yourpractice.com</em> (or whatever subdomain you want). Click Verify. Netlify checks ownership and gives you DNS instructions on the next screen.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h4>Add a CNAME at your registrar, wait, HTTPS auto-provisions</h4>
+              <p>Log into GoDaddy / Namecheap / Cloudflare. DNS management. Add a CNAME record:</p>
+              <div class="prompt"><span class="prompt-label">CNAME RECORD</span>Type:  CNAME
+Name:  97            (just the subdomain prefix)
+Value: nerdenterprises-tools.netlify.app   (your renamed Netlify URL, no https://, no trailing slash)
+TTL:   default</div>
+              <p>Propagation is usually 5&ndash;15 minutes (often faster on Netlify than on GitHub). Back in Netlify, the domain status flips to Verified once DNS resolves. HTTPS auto-provisions via Let's Encrypt within minutes after that. Visit your URL. Live.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <h3>TO UPDATE LATER (PATH B)</h3>
+          <p>Two ways. <strong>Manual update:</strong> go back to <em>app.netlify.com/drop</em> while logged in, drag the updated folder, and Netlify treats it as a new deployment of the same site (use the dashboard to deploy to your existing site rather than creating a new one). <strong>Power-user update (taught in Part 3):</strong> with the Netlify connector active in Claude, you can prompt Claude Code directly: "Deploy this folder to my Netlify site." It handles the upload and the URL updates in about 30 seconds.</p>
+          <p><strong>Heads up on the free tier:</strong> Netlify Free includes 300 credits per month, with each deploy costing 15 credits. That's about 20 deploys per month before you hit the cap. For one-time tools and occasional updates, you'll never notice. For tools you're iterating on heavily, GitHub Pages (Path A) has no such limit.</p>
+        </div>
       </div>
     </div>
   </section>
